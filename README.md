@@ -10,9 +10,9 @@ Arguments prefixed with `*` marks that it is optional
 
 Arguments enclosed in `< >` expects a list of arguments in the specified format
 
-### Cleaner
+### Cleanerr
 
-`[p]cog install rox-cogs Cleaner`
+`[p]cog install rox-cogs Cleanerr`
 
 Enforces a set of allowed filetypes based on channel
 

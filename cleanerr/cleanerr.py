@@ -3,17 +3,16 @@ import discord
 from redbot.core import Config, checks, commands
 
 import logging
-from typing import Collection, Optional
+from typing import Optional
 
 
-class Cleaner(commands.Cog):
+class Cleanerr(commands.Cog):
     """
     Deletes messages with attachments that are not images.
     """
 
     def __init__(self):
         self.config = Config.get_conf(self, identifier=2592823300)
-        self.types_template = r"([^\s]+(\.(?i)(%s))$)"
         default_allowed = {
             "enabled": False,
             "types": ["jpg", "png", "gif", "bmp"]
@@ -23,13 +22,13 @@ class Cleaner(commands.Cog):
         self.config.register_channel(**default_allowed)
 
     @commands.group()
-    async def cleaner(self, ctx: commands.Context):
+    async def cleanerr(self, ctx: commands.Context):
         """
-        Options for cleaner
+        Options for cleanerr
         """
         pass
 
-    @cleaner.command(name="toggle")
+    @cleanerr.command(name="toggle")
     @checks.admin_or_permissions(manage_messages=True)
     async def toggle_channel(self, ctx, channel: discord.TextChannel = None):
         """
@@ -41,7 +40,7 @@ class Cleaner(commands.Cog):
         await self.config.channel(channel).enabled.set(not state)
         await ctx.send(f"Cleaner is now set to {not state} for {channel.mention}")
 
-    @cleaner.command(name="ext")
+    @cleanerr.command(name="ext")
     @checks.admin_or_permissions(manage_messages=True)
     async def ext_channel(self, ctx, channel: Optional[discord.TextChannel] = None, *, extentions: str):
         """
@@ -59,7 +58,7 @@ class Cleaner(commands.Cog):
         await ctx.send(
             f"Cleaner is set to delete the files with the extentions: {', '.join(extentions)} for {channel.mention}")
 
-    @cleaner.command(name="info")
+    @cleanerr.command(name="info")
     @checks.admin_or_permissions(manage_messages=True)
     async def info_channel(self, ctx, channel: discord.TextChannel = None):
         if not channel:
@@ -73,7 +72,7 @@ class Cleaner(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        allowed_types = self.types_template % await self.config.channel(message.channel).types()
+        allowed_types = await self.config.channel(message.channel).types()
         allowed_channel = await self.config.channel(message.channel).enabled()
         if not message.author.bot and allowed_channel and message.attachments:
             for attachment in message.attachments:
