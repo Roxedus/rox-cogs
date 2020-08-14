@@ -1,0 +1,11 @@
+{
+    "author": "Roxedus",
+    "install_msg ": "Enjoy",
+    "name": "Saverr",
+    "short": "Packages some data",
+    "description ": "Packages some data, and sends you a zip",
+    "tags": [
+        "Utility"
+    ],
+    "hidden": false
+}
