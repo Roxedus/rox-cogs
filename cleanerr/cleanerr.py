@@ -17,7 +17,7 @@ class Cleanerr(commands.Cog):
             "enabled": False,
             "types": ["jpg", "png", "gif", "bmp"]
         }
-        self.log = logging.getLogger("red.roxcogs.cleaner")
+        self.log = logging.getLogger("red.roxcogs.cleanerr")
         self.log.setLevel(logging.INFO)
         self.config.register_channel(**default_allowed)
 
