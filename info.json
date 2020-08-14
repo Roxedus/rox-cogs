@@ -1,0 +1,13 @@
+{
+    "author": [
+        "Roxedus"
+    ],
+    "install_msg": "Hello there!",
+    "name": "rox-cogs",
+    "short": "Cogs mainly used in my bots, but I try to keep them as general as can",
+    "description": "Cogs mainly used in my bots, but I try to keep them as general as can",
+    "tags": [
+        "Utility",
+        "Moderation"
+    ]
+}

@@ -1,9 +1,11 @@
 {
-    "AUTHOR" : "Roxedus",
-    "INSTALL_MSG" : "Im going to try not crash your server",
-    "NAME" : "Cleaner",
-    "SHORT" : "Does some automod",
-    "DESCRIPTION" : "Does some automod",
-    "TAGS" : ["utility"],
-    "HIDDEN" : false
+    "author": "Roxedus",
+    "install_msg ": "Im going to try not crash your server",
+    "name": "Cleaner",
+    "short": "Filetype allowlist",
+    "description ": "Sets an allowlist for extentions in specified channels",
+    "tags": [
+        "Moderation"
+    ],
+    "hidden": false
 }

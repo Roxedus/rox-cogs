@@ -12,6 +12,8 @@ Arguments enclosed in `< >` expects a list of arguments in the specified format
 
 ### Cleaner
 
+`[p]cog install rox-cogs Cleaner`
+
 Enforces a set of allowed filetypes based on channel
 
 * `[p]cleaner toggle *channel` Toggles the filter on or off for the specifed channel
