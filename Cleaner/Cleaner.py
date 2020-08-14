@@ -1,8 +1,8 @@
 # Bot Packages
 import discord
-from redbot.core import commands, Config, checks, commands
+from redbot.core import Config, checks, commands
 
-
+import logging
 from typing import Collection, Optional
 
 
@@ -18,6 +18,8 @@ class Cleaner(commands.Cog):
             "enabled": False,
             "types": ["jpg", "png", "gif", "bmp"]
         }
+        self.log = logging.getLogger("red.roxcogs.cleaner")
+        self.log.setLevel(logging.INFO)
         self.config.register_channel(**default_allowed)
 
     @commands.group()
@@ -73,21 +75,22 @@ class Cleaner(commands.Cog):
     async def on_message(self, message):
         allowed_types = self.types_template % await self.config.channel(message.channel).types()
         allowed_channel = await self.config.channel(message.channel).enabled()
-        if allowed_channel:
-            if message.attachments:
-                for attachment in message.attachments:
-                    if attachment.filename.split(".")[-1] not in allowed_types:
-                        await message.delete()
-                        msg_content = f"{message.author.mention} Please do not post attachments."
-                        title = "This is not an image"
-                        description = "To help guard our users against malware, we only allow image uploads." \
-                                      "\nIf you posted logs, please upload them to " \
-                                      "[Pastebin](https://pastebin.com) " \
-                                      "or [Gist](https://gist.github.com/)" \
-                                      "\n**do not upload** the file as an attachment."
-                        foot = f"Called by {message.author}"
-                        embed = discord.Embed(
-                            title=title, colour=message.author.colour, description=description)
-                        embed.set_footer(
-                            text=foot, icon_url=message.author.avatar_url)
-                        await message.channel.send(content=msg_content, embed=embed)
+        if not message.author.bot and allowed_channel and message.attachments:
+            for attachment in message.attachments:
+                if attachment.filename.split(".")[-1] not in allowed_types:
+                    await message.delete()
+                    msg_content = f"{message.author.mention} Please do not post attachments."
+                    title = "This is not an image"
+                    description = "To help guard our users against malware, we only allow image uploads." \
+                                  "\nIf you posted logs, please upload them to " \
+                                  "[Pastebin](https://pastebin.com) " \
+                                  "or [Gist](https://gist.github.com/)" \
+                                  "\n**do not upload** the file as an attachment."
+                    foot = f"Called by {message.author}"
+                    embed = discord.Embed(
+                        title=title, colour=message.author.colour, description=description)
+                    embed.set_footer(
+                        text=foot, icon_url=message.author.avatar_url)
+                    await message.channel.send(content=msg_content, embed=embed)
+                    self.log.info("%s posted a prohibited attatchment in %s:%s" %
+                                  (message.author.name, message.guild.name, message.channel.name))
