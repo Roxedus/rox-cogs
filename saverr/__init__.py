@@ -1,4 +1,4 @@
-from saverr.saverr import saverr
+from saverr.saverr import Saverr
 
 __red_end_user_data_statement__ = (
     "This cog does not store data or metadata about users."
@@ -6,5 +6,5 @@ __red_end_user_data_statement__ = (
 
 
 def setup(bot):
-    cog = saverr(bot)
+    cog = Saverr(bot)
     bot.add_cog(cog)
