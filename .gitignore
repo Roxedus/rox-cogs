@@ -1,0 +1,5 @@
+.devbot
+_ignore
+**__pycache__**
+
+venv
