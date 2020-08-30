@@ -1,0 +1,13 @@
+{
+    "author": [
+        "Roxedus"
+    ],
+    "install_msg": "Im going to try not crash your server",
+    "name": "Various commands for support",
+    "short": "Support helper commands",
+    "description": "Support helper commands",
+    "tags": [
+        "Moderation"
+    ],
+    "hidden": false
+}
