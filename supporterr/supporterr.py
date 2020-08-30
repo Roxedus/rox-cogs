@@ -56,7 +56,7 @@ class Supporterr(commands.Cog):
         msg = f"Hey{' ' + user.mention if user else ''}! Please share your nginx config"
         title = "Hey! Please show your nginx config"
         txt = "Please post your Nginx config using one of the following methods:\n" \
-            "**1 -** Using ngx pastebin: <https://paste.ngx.cc/>\n" \
+            "**1 -** Using nginx pastebin: <https://paste.nginx.org/>\n" \
             "**2 -** Using pastebin: <https://pastebin.com/>\n" \
             "**3 -** Using discord markdown, by typing:\n\n" \
             "\\```nginx\n" \
@@ -68,6 +68,6 @@ class Supporterr(commands.Cog):
         embed = discord.Embed(title=title, colour=user.colour if user else ctx.author.colour)
         embed.description = txt
         embed.add_field(name="Gist", inline=True, value="[GIST](https://gist.github.com/)")
-        embed.add_field(name="Ngx Pastebin", inline=True, value="[NGX](https://paste.ngx.cc)")
+        embed.add_field(name="Nginx Pastebin", inline=True, value="[Nginx](https://paste.nginx.org/)")
         embed.add_field(name="Pastebin", inline=True, value="[Pastebin](https://pastebin.com)")
         await ctx.send(msg, embed=embed)

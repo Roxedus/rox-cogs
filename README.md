@@ -29,3 +29,13 @@ Enforces a set of allowed filetypes based on channel
 Eases some data-migration
 
 * `[p]zip_emoji` Saves all the emojis the bot sees to a zip, and replies with it (Does not respect max-size)
+
+### Supporterr
+
+`[p]cog install rox-cogs Supporterr`
+
+Some commands to assist in troubleshooting
+
+* `[p]f12` Promts the user to check their browser-console.
+
+* `[p]paste` Promts the user to share their nginx config.
