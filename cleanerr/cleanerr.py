@@ -49,7 +49,7 @@ class Cleanerr(commands.Cog):
         Default= jpg png gif bmp
         """
 
-        extentions = list(extentions.split(" "))
+        extentions = list(extentions.split(" ").lower())
 
         if not channel:
             channel = ctx.channel
@@ -76,7 +76,7 @@ class Cleanerr(commands.Cog):
         allowed_channel = await self.config.channel(message.channel).enabled()
         if not message.author.bot and allowed_channel and message.attachments:
             for attachment in message.attachments:
-                if attachment.filename.split(".")[-1] not in allowed_types:
+                if attachment.filename.split(".")[-1].lower() not in allowed_types:
                     await message.delete()
                     msg_content = f"{message.author.mention} Please do not post attachments."
                     title = "This is not an image"
