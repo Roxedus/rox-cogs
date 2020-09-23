@@ -22,7 +22,7 @@ class Rulerr(commands.Cog):
 
     def __init__(self, bot: Red):
         self.bot = bot
-        self.config = Config.get_conf(self, identifier=9783465975)
+        self.config = Config.get_conf(self, identifier=9783465975, force_registration=True)
         default_settings = {
             "auto_update": [],
             "channel": {},
