@@ -47,6 +47,9 @@ class Rulerr(commands.Cog):
     async def rules(self, ctx, law: Union[int, str] = None, *, num: str = None):
         """Command to explicit get the rules in a law"""
 
+        if law is not None:
+            law = law.lower()
+
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
 
@@ -103,6 +106,9 @@ class Rulerr(commands.Cog):
     async def newrules(self, ctx, law, *, newrule: str = None):
         """Create a new law, with rules"""
 
+        if law is not None:
+            law = law.lower()
+
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
         added = await rules.add_rule(law, newrule)
@@ -123,6 +129,9 @@ class Rulerr(commands.Cog):
     async def plaintext(self, ctx, law):
         """Sends the law in plaintext"""
 
+        if law is not None:
+            law = law.lower()
+
         try:
             rule_text = await self.config.guild(ctx.guild).rules.get_raw(law)
             await ctx.send("```\n" + rule_text['rule_text'] + "\n```")
@@ -132,6 +141,9 @@ class Rulerr(commands.Cog):
     @ _rule_settings.command(name="remove")
     async def removerules(self, ctx, law):
         """Removes the law"""
+
+        if law is not None:
+            law = law.lower()
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
@@ -146,6 +158,9 @@ class Rulerr(commands.Cog):
     async def updaterules(self, ctx, law, *, newrule):
         """Updates the law"""
 
+        if law is not None:
+            law = law.lower()
+
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
         try:
@@ -157,6 +172,9 @@ class Rulerr(commands.Cog):
     @ _rule_settings.command(name="default")
     async def set_default_rule(self, ctx, law):
         """Set the default law for this guild"""
+
+        if law is not None:
+            law = law.lower()
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
@@ -170,7 +188,7 @@ class Rulerr(commands.Cog):
                     _formated=await rules.get_rules_formatted()
                 )
             )
-        await rules.change_setting("default_rule", law.lower())
+        await rules.change_setting("default_rule", law)
         await ctx.send(_('{law} is now the default law').format(law=law))
 
     @ commands.guild_only()
@@ -182,6 +200,9 @@ class Rulerr(commands.Cog):
     @ _auto_settings.command(name="post")
     async def postauto(self, ctx, law):
         """Sends a message that automatically updates when the law updates"""
+
+        if law is not None:
+            law = law.lower()
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
@@ -224,6 +245,9 @@ class Rulerr(commands.Cog):
     @ _auto_settings.command(name="add")
     async def autorules(self, ctx, law, link):
         """Adds a old message from the bot to the list of automatically updated messages"""
+
+        if law is not None:
+            law = law.lower()
 
         msg = await self.helper._get_linked_message(ctx, link)
         if msg is None:
@@ -281,6 +305,9 @@ class Rulerr(commands.Cog):
     async def edit_alternate(self, ctx, law, *, newrule):
         """Update the law with a alternate version"""
 
+        if law is not None:
+            law = law.lower()
+
         rules = RuleManager(self.config.guild(ctx.guild))
         try:
             await rules.edit_rule(law, newrule, alternate=True)
@@ -292,6 +319,9 @@ class Rulerr(commands.Cog):
     async def remove_alternate(self, ctx, law):
         """Removes the alternate law attatched to the law"""
 
+        if law is not None:
+            law = law.lower()
+
         rules = RuleManager(self.config.guild(ctx.guild))
         try:
             await rules.remove_rule(law, alternate=True)
@@ -302,6 +332,9 @@ class Rulerr(commands.Cog):
     @ _react_settings.command(name="list")
     async def show_alternate(self, ctx, law: str = None):
         """Lists the alternate laws attatched to the law"""
+
+        if law is not None:
+            law = law.lower()
 
         rules = RuleManager(self.config.guild(ctx.guild))
         rule_text, date = await rules.get_rule_text(law, alternate=True)
@@ -331,6 +364,9 @@ class Rulerr(commands.Cog):
     @ _react_settings.command(name="link")
     async def link_alternate(self, ctx, law, link):
         """Adds a old message from the bot to the list of automatically updated react-messages"""
+
+        if law is not None:
+            law = law.lower()
 
         msg = await self.helper._get_linked_message(ctx, link)
         if msg is None:
