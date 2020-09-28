@@ -1,6 +1,5 @@
 # Bot Packages
 import discord
-from discord import embeds
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -74,7 +73,7 @@ class Rulerr(commands.Cog):
         if rule_text == "":
             return await ctx.send(_('This law is completely empty'))
 
-        # # Get only specified rules
+        # Get only specified rules
         if num is not None:
             await ctx.message.delete()
             partial_rules = ""
@@ -178,6 +177,7 @@ class Rulerr(commands.Cog):
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
+        # pylint: disable=unused-variable
         rule_text, date = await rules.get_rule_text(law)
 
         if rule_text is None:
@@ -190,6 +190,19 @@ class Rulerr(commands.Cog):
             )
         await rules.change_setting("default_rule", law)
         await ctx.send(_('{law} is now the default law').format(law=law))
+
+    @ _rule_settings.command(name="prefix")
+    async def set_prefix(self, ctx, prefix):
+        """Set the default on_message prefix for this guild"""
+
+        if prefix is not None:
+            prefix = prefix.lower()
+
+        config = self.config.guild(ctx.guild)
+        rules = RuleManager(config)
+
+        await rules.change_setting("rule_prefix", prefix)
+        await ctx.send(_('{prefix} is now the default prefix').format(prefix=prefix))
 
     @ commands.guild_only()
     @ commands.has_permissions(manage_messages=True)
@@ -337,6 +350,7 @@ class Rulerr(commands.Cog):
             law = law.lower()
 
         rules = RuleManager(self.config.guild(ctx.guild))
+        # pylint: disable=unused-variable
         rule_text, date = await rules.get_rule_text(law, alternate=True)
         if rule_text is not None:
             await ctx.send("```\n" + rule_text + "\n```")
@@ -421,10 +435,13 @@ class Rulerr(commands.Cog):
 
         content = message.content
 
-        if content == '' or content[0] != "§":  # hardcoded atm
+        config = self.config.guild(message.guild)
+        prefix = await config.get_raw("rule_prefix")
+
+        if content == '' or content[0] != prefix:
             return
 
-        split = content.split('§')
+        split = content.split(prefix)
         num = split[1]
 
         if num == '':
@@ -436,7 +453,7 @@ class Rulerr(commands.Cog):
         except ValueError:
             return
 
-        rules = RuleManager(self.config.guild(message.guild))
+        rules = RuleManager(config)
 
         lov = await rules.get_settings("default_rule")
         rule_text, date = await rules.get_rule_text(lov)

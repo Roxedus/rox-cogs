@@ -81,6 +81,7 @@ class RuleManager:
     async def add_link_setting(self, setting, name, link):
         if name is not None:
             name = name.lower()
+        # pylint: disable=unused-variable
         rule, date = await self.get_rule_text(name)
         if rule is not None:
             if any(msg for msg in await self.config.get_raw(setting) if msg["link"] == link.get('link')):

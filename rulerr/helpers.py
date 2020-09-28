@@ -19,7 +19,6 @@ class RuleHelper:
 
         async with ctx.channel.typing():
             s_embed = await self._create_embed(text=_('Messages updated'))
-            s_embed.description = _('If some messages could not be found, please remove them manually')
             for message in auto_update_messages:
                 if message["name"] == name or name is None:
                     msg = await self._get_linked_message(ctx, message["link"])
@@ -35,6 +34,10 @@ class RuleHelper:
                     await asyncio.sleep(2)
                     embed = await self._create_embed(updated_text, date)
                     await msg.edit(content=None, embed=embed)
+            if len(s_embed.fields) == 0:
+                s_embed.description = _('Updated messages')
+            else:
+                s_embed.description = _('Some messages could not be found, please remove them manually')
             await ctx.send(embed=s_embed)
 
     async def _get_linked_message(self, ctx, message_link):
@@ -76,7 +79,7 @@ class RuleHelper:
             if rule["name"] == to_match or rule["link"] == to_match:
                 msg = await self._get_linked_message(ctx, rule["link"])
                 if msg is None:
-                    await ctx.send("{}:\n{}\n{}".format(
+                    await ctx.send("{}:\n<{}>\n{}".format(
                         _('Could not remove the reactions from the following message'),
                         to_match["link"],
                         _('Ensure the bot has access, or delete the reaction manually')
