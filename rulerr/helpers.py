@@ -34,6 +34,8 @@ class RuleHelper:
 
                     await asyncio.sleep(2)
                     embed = await self._create_embed(updated_text, date)
+                    if len(msg.embeds) == 1:
+                        embed.colour = msg.embeds[0].colour
                     await msg.edit(content=None, embed=embed)
             if len(s_embed.fields) == 0:
                 s_embed.description = _('Updated messages')
