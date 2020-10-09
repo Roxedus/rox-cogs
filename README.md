@@ -22,6 +22,16 @@ Enforces a set of allowed filetypes based on channel
 
 * `[p]cleaner info *channel` Respond with the settings for the specified channel
 
+### Rulerr
+
+`[p]cog install rox-cogs Rulerr`
+
+Cog to manage laws with rules
+
+* `[p]rule <int>` Command to explicit get the rules in a law
+
+* `[p]ruleset` Group for managing rules and laws
+
 ### Saverr
 
 `[p]cog install rox-cogs Saverr`
