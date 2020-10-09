@@ -1,8 +1,11 @@
 # Bot Packages
 import discord
+from discord.errors import Forbidden
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.utils.menus import start_adding_reactions
+from redbot.core.utils.predicates import ReactionPredicate
 
 import asyncio
 import logging
@@ -23,14 +26,17 @@ class Rulerr(commands.Cog):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=9783465975, force_registration=True)
         default_settings = {
+            "agreement_msg": {},
+            "agreement_role": "",
+            "alt_emoji": "\N{INCOMING ENVELOPE}",
             "auto_update": [],
             "channel": {},
             "default_rule": None,
+            "emoji": "\N{THUMBS UP SIGN}",
+            "interface_lang": "en_en",
             "react_rules": [],
             "rule_prefix": "§",
             "rules": {},
-            "interface_lang": "en_en",
-            "emoji": "\N{INCOMING ENVELOPE}"
         }
         self.log = logging.getLogger("red.roxcogs.rulerr")
         self.log.setLevel(logging.INFO)
@@ -97,7 +103,13 @@ class Rulerr(commands.Cog):
 
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
-    @commands.group(name="laws")
+    @commands.group(name="ruleset")
+    async def _rule_set(self, ctx):
+        """Group for managing rules and laws"""
+
+    @commands.guild_only()
+    @checks.mod_or_permissions(manage_messages=True)
+    @_rule_set.group(name="laws")
     async def _rule_settings(self, ctx):
         """Commands for managing rules and laws"""
 
@@ -133,7 +145,7 @@ class Rulerr(commands.Cog):
 
         try:
             rule_text = await self.config.guild(ctx.guild).rules.get_raw(law)
-            await ctx.send("```\n" + rule_text['rule_text'] + "\n```")
+            await ctx.send('```\n" + rule_text["rule_text"] + "\n```')
         except KeyError:
             await ctx.send(_('Please ensure {law} is a valid rule').format(law=law))
 
@@ -182,7 +194,7 @@ class Rulerr(commands.Cog):
 
         if rule_text is None:
             return await ctx.send(
-                '{_not}.\n\n**{_these}**:\n{_formated}'.format(
+                "{_not}.\n\n**{_these}**:\n{_formated}".format(
                     _not=_('This law is not in the lawbook'),
                     _these=_('The following laws are in the lawbook'),
                     _formated=await rules.get_rules_formatted()
@@ -193,7 +205,7 @@ class Rulerr(commands.Cog):
 
     @ _rule_settings.command(name="prefix")
     async def set_prefix(self, ctx, prefix):
-        """Set the default on_message prefix for this guild"""
+        """Set the default on_messageprefix for this guild"""
 
         if prefix is not None:
             prefix = prefix.lower()
@@ -206,7 +218,7 @@ class Rulerr(commands.Cog):
 
     @ commands.guild_only()
     @ commands.has_permissions(manage_messages=True)
-    @ commands.group(name="autoset")
+    @ _rule_set.group(name="auto")
     async def _auto_settings(self, ctx):
         """Commands for setting up automatically message updating"""
 
@@ -223,7 +235,7 @@ class Rulerr(commands.Cog):
 
         if rule_text is None:
             return await ctx.send(
-                '{_not}.\n\n**{_these}**:\n{_formated}'.format(
+                "{_not}.\n\n**{_these}**:\n{_formated}".format(
                     _not=_('This law is not in the lawbook'),
                     _these=_('The following laws are in the lawbook'),
                     _formated=await rules.get_rules_formatted()
@@ -231,12 +243,11 @@ class Rulerr(commands.Cog):
             )
 
         if rule_text == "":
-            await ctx.send(_('This law is completly empty'))
-            return
+            return await ctx.send(_('This law is completly empty'))
 
         embed = await self.helper._create_embed(rule_text, date)
         msg = await ctx.send(embed=embed)
-        await rules.add_link_setting('auto_update', law, await self.helper._format_message_link(msg))
+        await rules.add_link_setting("auto_update", law, await self.helper._format_message_link(msg))
 
         conf_msg = await ctx.send(_('The message now updates automatically'))
         await asyncio.sleep(5)
@@ -287,13 +298,13 @@ class Rulerr(commands.Cog):
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
-        auto_update_messages = await rules.get_settings('auto_update')
+        auto_update_messages = await rules.get_settings("auto_update")
 
         if len(auto_update_messages) == 0:
             return await ctx.send(_('No message is currently set up for automatic updates'))
 
         embed = await self.helper._create_embed()
-        embed.title = '**{}:**'.format(_('Messages set to automatically update'))
+        embed.title = "**{}:**".format(_('Messages set to automatically update'))
 
         for message in auto_update_messages:
             embed.add_field(name=f'Lov: {message["name"]}', inline=False,
@@ -310,11 +321,11 @@ class Rulerr(commands.Cog):
 
     @ commands.guild_only()
     @ commands.has_permissions(manage_messages=True)
-    @ commands.group(name="reactset")
-    async def _react_settings(self, ctx):
+    @ _rule_set.group(name="alternate", aliases=["alt"])
+    async def _alt_settings(self, ctx):
         """Commands for setting up alternate rules to DMs triggered by reactions"""
 
-    @ _react_settings.command(name="update")
+    @ _alt_settings.command(name="update")
     async def edit_alternate(self, ctx, law, *, newrule):
         """Update the law with a alternate version"""
 
@@ -328,7 +339,7 @@ class Rulerr(commands.Cog):
         except KeyError:
             await ctx.send(_('Could not find this law'))
 
-    @ _react_settings.command(name="remove")
+    @ _alt_settings.command(name="remove")
     async def remove_alternate(self, ctx, law):
         """Removes the alternate law attatched to the law"""
 
@@ -342,7 +353,7 @@ class Rulerr(commands.Cog):
         except KeyError:
             await ctx.send(_('Could not find this law'))
 
-    @ _react_settings.command(name="list")
+    @ _alt_settings.command(name="list")
     async def show_alternate(self, ctx, law: str = None):
         """Lists the alternate laws attatched to the law"""
 
@@ -358,14 +369,14 @@ class Rulerr(commands.Cog):
             return await ctx.send("**{_txt}:**\n{_list}".format(_txt=_('Lists all alternate laws for this guild'),
                                                                 _list=await rules.get_rules_formatted(alternate=True)))
 
-    @ _react_settings.command(name="auto_list")
+    @ _alt_settings.command(name="auto_list")
     async def _react_list(self, ctx):
         """Lists the alternate laws set up with reactions"""
 
         rules = RuleManager(self.config.guild(ctx.guild))
-        react_messages = await rules.get_settings('react_rules')
+        react_messages = await rules.get_settings("react_rules")
 
-        list_message = '**{}:**\n'.format(_('Reaction-messages set to automatically update'))
+        list_message = "**{}:**\n".format(_('Reaction-messages set to automatically update'))
 
         if len(react_messages) == 0:
             return await ctx.send(_('No reaction-message is currently set up for automatic updates'))
@@ -375,7 +386,7 @@ class Rulerr(commands.Cog):
 
         await ctx.send(list_message)
 
-    @ _react_settings.command(name="link")
+    @ _alt_settings.command(name="link")
     async def link_alternate(self, ctx, law, link):
         """Adds a old message from the bot to the list of automatically updated react-messages"""
 
@@ -390,7 +401,7 @@ class Rulerr(commands.Cog):
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
-        added = await rules.add_link_setting('react_rules', law, await self.helper._format_message_link(msg))
+        added = await rules.add_link_setting("react_rules", law, await self.helper._format_message_link(msg))
 
         if added == -1:
             await ctx.send(_('Message already set to automatically update'))
@@ -398,14 +409,14 @@ class Rulerr(commands.Cog):
             try:
                 await msg.clear_reactions()
                 await asyncio.sleep(1)
-                await msg.add_reaction(await config.get_raw("emoji"))
+                await msg.add_reaction(await config.get_raw("alt_emoji"))
                 await ctx.send(_('React-message now set to automatically update'))
             except Exception:
                 await ctx.send(_('I had some trouble reacting'))
         else:
             await ctx.send(_('This law does not exist'))
 
-    @ _react_settings.command(name="unlink")
+    @ _alt_settings.command(name="unlink")
     async def unlink_alternate(self, ctx, message_link):
         """Remove a react-message from the list of messages that automatically updates"""
 
@@ -414,7 +425,7 @@ class Rulerr(commands.Cog):
         msg = await self.helper._get_linked_message(ctx, message_link)
         if msg is None:
             return await ctx.send(_('Ensure the link is used with {list_command}').format(
-                list_command=f'`{ctx.prefix}reactset auto_list`'))
+                list_command=f"`{ctx.prefix}reactset auto_list`"))
         link = await self.helper._format_message_link(msg)
 
         await self.helper._remove_reactions(ctx, rules, link)
@@ -423,6 +434,120 @@ class Rulerr(commands.Cog):
             await ctx.send(_('React-message removed from list'))
         else:
             await ctx.send(_('Message was never set as a react-message'))
+
+    @ commands.guild_only()
+    @ commands.has_permissions(manage_messages=True)
+    @ _rule_set.group(name="react")
+    async def _react_settings(self, ctx):
+        """Commands for setting reaction based rule-agreement"""
+
+    @ _react_settings.command(name="set")
+    async def set_react(self, ctx, message_link):
+        """Sets the reaction based rule-agreement"""
+
+        config = self.config.guild(ctx.guild)
+        rules = RuleManager(config)
+
+        msg = await self.helper._get_linked_message(ctx, message_link)
+
+        if await config.get_raw("agreement_role") == "":
+            return await ctx.send(_('There is no agreement role set'))
+        elif msg is None:
+            return await ctx.send(_('Could not find the message'))
+        elif msg.author != self.bot.user:
+            return await ctx.send(_('This only works on messages owned by the bot'))
+
+        if not [rule for rule in await rules.get_settings("auto_update") if rule["message"] == int(msg.id)]:
+            _yes = await ctx.send(_('This is not a auto updating message, '
+                                    'would you like to make it one based on the default rule?'))
+            start_adding_reactions(_yes, ReactionPredicate.YES_OR_NO_EMOJIS)
+            pred = ReactionPredicate.yes_or_no(_yes, ctx.author)
+            try:
+                await ctx.bot.wait_for("reaction_add", check=pred, timeout=30.0)
+                if pred.result:
+                    await _yes.delete()
+                    law = await rules.get_settings("default_rule")
+                    await rules.add_link_setting("auto_update", law, await self.helper._format_message_link(msg))
+                    await self.helper._update_messages(ctx, rules, name=law, nomsg=True)
+                else:
+                    await _yes.delete()
+                    await ctx.react_quietly("❎")
+            except asyncio.exceptions.TimeoutError:
+                await _yes.delete()
+                await ctx.react_quietly("❎")
+
+        if await rules.get_settings("agreement_msg"):
+            _yes = await ctx.send(_('There is already a agreement message set up for this guild, overwrite?'))
+            start_adding_reactions(_yes, ReactionPredicate.YES_OR_NO_EMOJIS)
+            pred = ReactionPredicate.yes_or_no(_yes, ctx.author)
+            try:
+                await ctx.bot.wait_for("reaction_add", check=pred, timeout=30.0)
+                if pred.result:
+                    await _yes.delete()
+                else:
+                    await _yes.delete()
+                    return await ctx.react_quietly("❎")
+            except asyncio.exceptions.TimeoutError:
+                await _yes.delete()
+                return await ctx.react_quietly("❎")
+
+        await rules.change_setting("agreement_msg", await self.helper._format_message_link(msg))
+        await ctx.tick()
+        await msg.add_reaction(await config.get_raw("emoji"))
+        txt = f"[{_('This is now the agreement message')}]({msg.jump_url})"
+        embed = await self.helper._create_embed(txt)
+        embed.set_footer(text=_('Edited at'))
+        embed.timestamp = msg.created_at
+        await ctx.send(embed=embed)
+
+    @ _react_settings.command(name="get")
+    async def get_react(self, ctx):
+        """Gets the message for the reaction based rule-agreement"""
+
+        config = self.config.guild(ctx.guild)
+        rules = RuleManager(config)
+
+        try:
+            link = await rules.get_settings("agreement_msg", "link")
+        except KeyError:
+            return await ctx.send(_('No react message is set'))
+        msg = await self.helper._get_linked_message(ctx, link)
+
+        if not msg:
+            return await ctx.send(_('No react message is set'))
+
+        txt = f"[{_('This is agreement message')}]({msg.jump_url})"
+        embed = await self.helper._create_embed(txt)
+        embed.set_footer(text=_('Edited at'))
+        embed.timestamp = msg.created_at
+        await ctx.send(embed=embed)
+
+    @ _react_settings.command(name="role")
+    async def set_react_role(self, ctx, role: discord.Role):
+        """Sets the role for the reaction based rule-agreement"""
+
+        config = self.config.guild(ctx.guild)
+        await config.agreement_role.set(role.id)
+        msg_txt = role.mention + " " + _('is now the role assigned on agreement')
+        embed = await self.helper._create_embed(text=msg_txt)
+        await ctx.send(embed=embed)
+
+    @ _react_settings.command(name="remove")
+    async def remove_react(self, ctx):
+        """Removes the message for the reaction based rule-agreement from the list"""
+
+        config = self.config.guild(ctx.guild)
+
+        try:
+            msg = await ctx.channel.fetch_message(await config.get_raw("agreement_msg", "message"))
+            await msg.remove_reaction(await config.get_raw("emoji"), self.bot.user)
+        except KeyError:
+            pass
+
+        await config.agreement_msg.clear()
+
+        embed = await self.helper._create_embed(_('Cleared the agreement message'))
+        await ctx.send(embed=embed)
 
     @ commands.Cog.listener()
     async def on_message(self, message):
@@ -438,13 +563,13 @@ class Rulerr(commands.Cog):
         config = self.config.guild(message.guild)
         prefix = await config.get_raw("rule_prefix")
 
-        if content == '' or content[0] != prefix:
+        if content == "" or content[0] != prefix:
             return
 
         split = content.split(prefix)
         num = split[1]
 
-        if num == '':
+        if num == "":
             return
 
         # crap way to avoid running when a command runs
@@ -462,7 +587,7 @@ class Rulerr(commands.Cog):
 
         if rule_text is None:
             return await context.send(
-                '{_not_default}.\n\n**{_these}**:\n{_formated}'.format(
+                "{_not_default}.\n\n**{_these}**:\n{_formated}".format(
                     _not_default=_('There needs to be a default law for this guild for this to work'),
                     _these=_('The following laws are in the lawbook'),
                     _formated=await rules.get_rules_formatted()
@@ -481,17 +606,52 @@ class Rulerr(commands.Cog):
             if m is not None:
                 partial_rules += m.groups()[0] + "\n"
 
-        if partial_rules == '':
+        if partial_rules == "":
             return
         await context.send(embed=await self.helper._create_embed(partial_rules, date))
 
+    @ commands.Cog.listener(name="on_raw_reaction_add")
+    async def on_agreement_reaction(self, payload):
+        if payload.guild_id is None:
+            return
+
+        channel = self.bot.get_channel(payload.channel_id)
+        msg = await channel.fetch_message(payload.message_id)
+
+        config = self.config.guild(msg.guild)
+        emoji = await config.get_raw("emoji")
+        role = await config.get_raw("agreement_role")
+
+        if not role:
+            return
+
+        role = msg.guild.get_role(role)
+
+        if payload.message_id != await config.get_raw("agreement_msg", "message"):
+            return
+
+        if str(payload.emoji) == emoji:
+            if payload.event_type == "REACTION_ADD" and payload.user_id != self.bot.user.id:
+                user = payload.member
+                try:
+                    await user.add_roles(role, reason=_('Agreed to the rules'))
+                    await msg.remove_reaction(emoji, user)
+                except Exception:
+                    if msg.channel.permissions_for(user).send_messages:
+                        await channel.send("{} {}".format(_('Tell a mod to fix my perms'), user.mention))
+                    else:
+                        self.log.info("The bot is missing perms in %s to agree" % (msg.guild.name))
+        else:
+            if payload.event_type == "REACTION_ADD" and payload.user_id != self.bot.user.id:
+                await msg.remove_reaction(payload.emoji, payload.member)
+
     @ commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        await self.react_action(payload)
+        await self.alt_action(payload)
 
     @ commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        await self.react_action(payload)
+        await self.alt_action(payload)
 
     @ commands.Cog.listener()
     async def on_raw_reaction_clear(self, payload):
@@ -501,8 +661,8 @@ class Rulerr(commands.Cog):
 
         rules = RuleManager(config)
 
-        emoji = await config.get_raw("emoji")
-        react_messages = await rules.get_settings('react_rules')
+        emoji = await config.get_raw("alt_emoji")
+        react_messages = await rules.get_settings("react_rules")
 
         if payload.message_id not in react_messages:
             return
@@ -510,8 +670,7 @@ class Rulerr(commands.Cog):
         await asyncio.sleep(1)
         await msg.add_reaction(emoji)
 
-    async def react_action(self, payload):
-
+    async def alt_action(self, payload):
         if payload.guild_id is None:
             return
 
@@ -521,10 +680,10 @@ class Rulerr(commands.Cog):
         config = self.config.guild(msg.guild)
         rules = RuleManager(config)
 
-        emoji = await config.get_raw("emoji")
-        react_messages = await rules.get_settings('react_rules')
+        emoji = await config.get_raw("alt_emoji")
+        react_messages = await rules.get_settings("react_rules")
 
-        if payload.message_id not in [rmessage['message'] for rmessage in react_messages]:
+        if payload.message_id not in [rmessage["message"] for rmessage in react_messages]:
             return
 
         if str(payload.emoji) == emoji:
@@ -543,7 +702,7 @@ class Rulerr(commands.Cog):
                 await msg.clear_reactions()
 
     async def _dm_rules(self, rules, user, msg):
-        react_rules = await rules.get_settings('react_rules')
+        react_rules = await rules.get_settings("react_rules")
         rule_name = None
         for rule in react_rules:
             if rule["message"] == msg.id:

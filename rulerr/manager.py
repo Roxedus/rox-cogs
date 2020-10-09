@@ -28,7 +28,7 @@ class RuleManager:
         _rule = await self.config.rules.get_raw(name)
         if _rule is not None:
             if alternate:
-                await self.config.rules.set_raw(name, 'alternate', value=None)
+                await self.config.rules.set_raw(name, "alternate", value=None)
                 await self.remove_link_setting("react_rules", "name", name)
             else:
                 await self.config.rules.clear_raw(name)
@@ -70,9 +70,9 @@ class RuleManager:
         formatted_rules = ""
         for rule in rules:
             if rule == await self.config.default_rule():
-                formatted_rules = '•' + rule.capitalize() + '\n' + formatted_rules
+                formatted_rules = "•" + rule.capitalize() + "\n" + formatted_rules
             else:
-                formatted_rules += '•' + rule.capitalize() + '\n'
+                formatted_rules += "•" + rule.capitalize() + "\n"
         return formatted_rules
 
     async def _get_rule(self, name=None):
@@ -84,11 +84,11 @@ class RuleManager:
         # pylint: disable=unused-variable
         rule, date = await self.get_rule_text(name)
         if rule is not None:
-            if any(msg for msg in await self.config.get_raw(setting) if msg["link"] == link.get('link')):
+            if any(msg for msg in await self.config.get_raw(setting) if msg["link"] == link.get("link")):
                 return -1
             _update = await self.config.get_raw(setting)
-            _update.append({'name': name, 'channel': link.get('channel'),
-                            'message': link.get('message'), 'link': link.get('link')})
+            _update.append({"name": name, "channel": link.get("channel"),
+                            "message": link.get("message"), "link": link.get("link")})
             await self.config.set_raw(setting, value=_update)
             return True
         return False

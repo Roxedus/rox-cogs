@@ -12,10 +12,11 @@ class RuleHelper:
     def __init__(self, bot):
         self.bot = bot
 
-    async def _update_messages(self, ctx, rules, name=None):
-        auto_update_messages = await rules.get_settings('auto_update')
+    async def _update_messages(self, ctx, rules, name=None, nomsg=False):
+        auto_update_messages = await rules.get_settings("auto_update")
 
-        await ctx.send(_('Updating messages'))
+        if not nomsg:
+            await ctx.send(_('Updating messages'))
 
         async with ctx.channel.typing():
             s_embed = await self._create_embed(text=_('Messages updated'))
@@ -38,7 +39,10 @@ class RuleHelper:
                 s_embed.description = _('Updated messages')
             else:
                 s_embed.description = _('Some messages could not be found, please remove them manually')
-            await ctx.send(embed=s_embed)
+
+            if not nomsg:
+                await ctx.send(embed=s_embed)
+            return
 
     async def _get_linked_message(self, ctx, message_link):
         try:
@@ -63,7 +67,7 @@ class RuleHelper:
             return None
 
     async def _create_embed(self, text: str = None, date: str = None):
-        avatar = self.bot.user.avatar_url_as(format=None, static_format='png', size=1024)
+        avatar = self.bot.user.avatar_url_as(format=None, static_format="png", size=1024)
         embed = discord.Embed(color=0xD9C04D)
         embed.set_author(name=self.bot.user.name, icon_url=avatar)
         if text:
@@ -87,10 +91,10 @@ class RuleHelper:
                     )
                     continue
 
-                await msg.remove_reaction(await ctx.bot.config.guild(ctx.guild).get_raw("emoji"), self.bot.user)
+                await msg.remove_reaction(await ctx.bot.config.guild(ctx.guild).get_raw("alt_emoji"), self.bot.user)
 
                 await asyncio.sleep(2)
 
     async def _format_message_link(self, msg):
-        return {'channel': msg.channel.id, 'message': msg.id,
-                'link': f'https://discordapp.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}'}
+        return {"channel": msg.channel.id, "message": msg.id,
+                "link": f"https://discordapp.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}"}
