@@ -9,7 +9,7 @@ from redbot.core.utils.predicates import ReactionPredicate
 import asyncio
 import logging
 import re
-from typing import Union
+from typing import Optional, Union
 
 from .helpers import RuleHelper
 from .manager import RuleManager
@@ -48,11 +48,15 @@ class Rulerr(commands.Cog):
 
     @commands.guild_only()
     @commands.command(name="rule")
-    async def rules(self, ctx, law: Union[int, str] = None, *, num: str = None):
+    async def rules(self, ctx, law: Union[int, str] = None, *, num: str = None, user: Optional[discord.Member] = None):
         """Command to explicit get the rules in a law"""
 
         if law is not None:
             law = law.lower()
+
+        content = None
+        if user and not user.bot:
+            content = "{}! {}".format(user.mention, _('Hey please read the rules'))
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
@@ -96,9 +100,9 @@ class Rulerr(commands.Cog):
             elif law != await rules.get_settings("default_rule"):
                 ctx.send("**{_txt} {law}**\n".format(_txt=_('The rules for the law'), law=law) + partial_rules)
             else:
-                await ctx.send(embed=await self.helper._create_embed(partial_rules, date))
+                await ctx.send(content=content, embed=await self.helper._create_embed(partial_rules, date))
         else:
-            await ctx.send(embed=await self.helper._create_embed(rule_text, date))
+            await ctx.send(content=content, embed=await self.helper._create_embed(rule_text, date))
 
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
@@ -614,7 +618,12 @@ class Rulerr(commands.Cog):
 
         if partial_rules == "":
             return
-        await context.send(embed=await self.helper._create_embed(partial_rules, date))
+
+        mention = None
+        if message.author and message.mentions and not message.mentions[0].bot:
+            mention = "{}! {}".format(message.mentions[0].mention, _('Hey please read the rules'))
+
+        await context.send(content=mention, embed=await self.helper._create_embed(partial_rules, date))
 
     @ commands.Cog.listener(name="on_raw_reaction_add")
     async def on_agreement_reaction(self, payload):
