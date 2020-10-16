@@ -1,6 +1,5 @@
 # Bot Packages
 import discord
-from discord.errors import Forbidden
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
