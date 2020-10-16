@@ -14,6 +14,7 @@ class RuleHelper:
 
     async def _update_messages(self, ctx, rules, name=None, nomsg=False):
         auto_update_messages = await rules.get_settings("auto_update")
+        agreement_msg = await rules.get_settings("agreement_msg")
 
         if not nomsg:
             await ctx.send(_('Updating messages'))
@@ -34,9 +35,14 @@ class RuleHelper:
 
                     await asyncio.sleep(2)
                     embed = await self._create_embed(updated_text, date)
+                    content = None
+
                     if len(msg.embeds) == 1:
                         embed.colour = msg.embeds[0].colour
-                    await msg.edit(content=None, embed=embed)
+                    if message.get("message") == agreement_msg.get("message"):
+                        content = _('Please react with {emoji} to agree to the rules').format(
+                            emoji=await rules.get_settings("emoji"))
+                    await msg.edit(content=content, embed=embed)
             if len(s_embed.fields) == 0:
                 s_embed.description = _('Updated messages')
             else:
