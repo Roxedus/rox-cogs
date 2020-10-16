@@ -145,7 +145,7 @@ class Rulerr(commands.Cog):
 
         try:
             rule_text = await self.config.guild(ctx.guild).rules.get_raw(law)
-            await ctx.send('```\n" + rule_text["rule_text"] + "\n```')
+            await ctx.send("```\n" + rule_text["rule_text"] + "\n```")
         except KeyError:
             await ctx.send(_('Please ensure {law} is a valid rule').format(law=law))
 
