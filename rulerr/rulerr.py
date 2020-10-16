@@ -112,6 +112,13 @@ class Rulerr(commands.Cog):
     async def _rule_settings(self, ctx):
         """Commands for managing rules and laws"""
 
+    @_rule_settings.command(name="list")
+    async def listrules(self, ctx):
+        """Lists the current rules"""
+        rules = RuleManager(self.config.guild(ctx.guild))
+        await ctx.send("**{}**:\n{}".format(
+            _('The following laws are in the lawbook'), await rules.get_rules_formatted()))
+
     @_rule_settings.command(name="new")
     async def newrules(self, ctx, law, *, newrule: str = None):
         """Create a new law, with rules"""
