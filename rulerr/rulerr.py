@@ -48,15 +48,13 @@ class Rulerr(commands.Cog):
 
     @commands.guild_only()
     @commands.command(name="rule")
-    async def rules(self, ctx, law: Union[int, str] = None, *, num: str = None, user: Optional[discord.Member] = None):
+    async def rules(self, ctx, user: Optional[discord.Member] = None, law: Union[int, str] = None, *, num: str = None):
         """Command to explicit get the rules in a law"""
 
-        if law is not None:
+        if isinstance(law, str):
             law = law.lower()
 
-        content = None
-        if user and not user.bot:
-            content = "{}! {}".format(user.mention, _('Hey please read the rules'))
+        content = "{}! {}".format(user.mention, _('Hey please read the rules')) if user else None
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
@@ -98,7 +96,8 @@ class Rulerr(commands.Cog):
             if partial_rules == "":
                 await ctx.send(_('Could not find the rule you were looking for'))
             elif law != await rules.get_settings("default_rule"):
-                ctx.send("**{_txt} {law}**\n".format(_txt=_('The rules for the law'), law=law) + partial_rules)
+                await ctx.send(content=content, embed=await self.helper._create_embed(
+                    "**{_txt} {law}**\n".format(_txt=_('The rules for the law'), law=law) + partial_rules))
             else:
                 await ctx.send(content=content, embed=await self.helper._create_embed(partial_rules, date))
         else:
@@ -619,11 +618,11 @@ class Rulerr(commands.Cog):
         if partial_rules == "":
             return
 
-        mention = None
-        if message.author and message.mentions and not message.mentions[0].bot:
-            mention = "{}! {}".format(message.mentions[0].mention, _('Hey please read the rules'))
+        usrs = [user.mention for user in message.mentions if not user.bot and (
+            user.id != message.author.id)] if message.mentions else None
+        text = "{}! {}".format(', '.join(usrs), _('Hey please read the rules')) if usrs else None
 
-        await context.send(content=mention, embed=await self.helper._create_embed(partial_rules, date))
+        await context.send(content=text, embed=await self.helper._create_embed(partial_rules, date))
 
     @ commands.Cog.listener(name="on_raw_reaction_add")
     async def on_agreement_reaction(self, payload):
