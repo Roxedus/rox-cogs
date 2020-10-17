@@ -49,7 +49,7 @@ class Cleanerr(commands.Cog):
         Default= jpg png gif bmp
         """
 
-        extentions = list(extentions.split(" ").lower())
+        extentions = list(extentions.lower().split(" "))
 
         if not channel:
             channel = ctx.channel
