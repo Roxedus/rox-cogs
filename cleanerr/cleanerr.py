@@ -56,7 +56,7 @@ class Cleanerr(commands.Cog):
 
         await self.config.channel(channel).types.set(extentions)
         await ctx.send(
-            f"Cleaner is set to delete the files with the extentions: {', '.join(extentions)} for {channel.mention}")
+            f"Cleaner is set to allow the files with the extentions: {', '.join(extentions)} for {channel.mention}")
 
     @cleanerr.command(name="info")
     @checks.admin_or_permissions(manage_messages=True)
