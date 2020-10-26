@@ -1,14 +1,11 @@
 # Bot Packages
 import discord
-from discord import message
-from redbot.core import Config, checks, commands
+from redbot.core import commands
+from redbot.core.utils.embed import randomize_colour
 from redbot.core.bot import Red
 
 import logging
-import urllib.parse
 from typing import Optional
-
-import aiohttp
 
 
 class Supporterr(commands.Cog):
@@ -44,6 +41,8 @@ class Supporterr(commands.Cog):
         embed.add_field(name="Safari", inline=True,
                         value="[HOW TO](https://support.apple.com/guide/safari/"
                               "use-the-developer-tools-in-the-develop-menu-sfri20948/mac)")
+        if embed.colour.value == 0:
+            embed = randomize_colour(embed=embed)
         await ctx.send(msg, embed=embed)
 
     @commands.guild_only()
@@ -70,4 +69,6 @@ class Supporterr(commands.Cog):
         embed.add_field(name="Gist", inline=True, value="[GIST](https://gist.github.com/)")
         embed.add_field(name="Nginx Pastebin", inline=True, value="[Nginx](https://paste.nginx.org/)")
         embed.add_field(name="Pastebin", inline=True, value="[Pastebin](https://pastebin.com)")
+        if embed.colour.value == 0:
+            embed = randomize_colour(embed=embed)
         await ctx.send(msg, embed=embed)
