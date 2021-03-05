@@ -146,7 +146,6 @@ class Cleanerr(commands.Cog):
 
         allowed_types = await self.config.guild(message.guild).types() if channel_types == "Guild" else channel_types
         allowed_channel = channel_allowed if channel_allowed is not None else guild_allowed
-        print(f"{allowed_types=}, {allowed_channel=}")
 
         if allowed_channel and message.attachments:
             for attachment in message.attachments:
