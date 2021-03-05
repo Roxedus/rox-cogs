@@ -13,13 +13,17 @@ class Cleanerr(commands.Cog):
 
     def __init__(self):
         self.config = Config.get_conf(self, identifier=2592823300)
-        default_allowed = {
+        default_guild = {
             "enabled": False,
             "types": ["jpg", "png", "gif", "bmp"]
         }
+        default_channel = {
+            "types": "Guild"
+        }
         self.log = logging.getLogger("red.roxcogs.cleanerr")
         self.log.setLevel(logging.INFO)
-        self.config.register_channel(**default_allowed)
+        self.config.register_guild(**default_guild)
+        self.config.register_channel(**default_channel)
 
     @commands.group()
     async def cleanerr(self, ctx: commands.Context):
@@ -28,9 +32,16 @@ class Cleanerr(commands.Cog):
         """
         pass
 
-    @cleanerr.command(name="toggle")
+    @cleanerr.group()
+    async def channel(self, ctx: commands.Context):
+        """
+        Channel options for cleanerr
+        """
+        pass
+
+    @channel.command(name="toggle")
     @checks.admin_or_permissions(manage_messages=True)
-    async def toggle_channel(self, ctx, channel: discord.TextChannel = None):
+    async def toggle_channel(self, ctx: commands.Context, channel: discord.TextChannel = None):
         """
         Toggles the cleaner for the current, or mentioned channel
         """
@@ -40,41 +51,104 @@ class Cleanerr(commands.Cog):
         await self.config.channel(channel).enabled.set(not state)
         await ctx.send(f"Cleaner is now set to {not state} for {channel.mention}")
 
-    @cleanerr.command(name="ext")
+    @channel.command(name="ext")
     @checks.admin_or_permissions(manage_messages=True)
-    async def ext_channel(self, ctx, channel: Optional[discord.TextChannel] = None, *, extentions: str):
+    async def ext_channel(self, ctx: commands.Context, channel: Optional[discord.TextChannel] = None,
+                          *, extentions: str = "guild"):
         """
-        Sets the extentions for the cleaner in the current, or mentioned channel
+        Sets the extentions for the cleaner in the current, or mentioned channel.
+        If no mention is passed, it sets the Default value
 
-        Default= jpg png gif bmp
+        Default = Inherits the Guild default
         """
 
-        extentions = list(extentions.lower().split(" "))
+        msg = "Cleaner is set to follow the guild allowlist"
+
+        if extentions == "guild":
+            extentions = "Guild"
+        else:
+            extentions = list(extentions.lower().split(" "))
+            msg = f"Cleaner is set to allow the files with the extentions: {', '.join(extentions)}"
 
         if not channel:
             channel = ctx.channel
 
         await self.config.channel(channel).types.set(extentions)
+        await ctx.send(msg + f" for {channel.mention}")
+
+    @cleanerr.group()
+    async def guild(self, ctx: commands.Context):
+        """
+        Channel options for cleanerr
+        """
+        pass
+
+    @guild.command(name="toggle")
+    @checks.admin_or_permissions(manage_messages=True)
+    async def toggle_guild(self, ctx: commands.Context):
+        """
+        Toggles the cleaner for the guild
+        """
+        state = await self.config.guild(ctx.guild).enabled()
+        await self.config.guild(ctx.guild).enabled.set(not state)
+        await ctx.send(f"Cleaner is now set to {not state} for {ctx.guild.name}")
+
+    @guild.command(name="ext")
+    @checks.admin_or_permissions(manage_messages=True)
+    async def ext_guild(self, ctx: commands.Context, *, extentions: str):
+        """
+        Sets the extentions for the cleaner in the guild
+
+        Default = jpg png gif bmp
+        """
+
+        extentions = list(extentions.lower().split(" "))
+
+        await self.config.guild(ctx.guild).types.set(extentions)
         await ctx.send(
-            f"Cleaner is set to allow the files with the extentions: {', '.join(extentions)} for {channel.mention}")
+            f"Cleaner is set to allow the files with the extentions: {', '.join(extentions)} for {ctx.guild.name}")
 
     @cleanerr.command(name="info")
     @checks.admin_or_permissions(manage_messages=True)
-    async def info_channel(self, ctx, channel: discord.TextChannel = None):
+    async def info_channel(self, ctx: commands.Context, channel: discord.TextChannel = None):
         if not channel:
             channel = ctx.channel
-        conf = await self.config.channel(channel).all()
-        msg = "```\n"
-        for k, v in conf.items():
-            msg += k + ": " + str(v) + "\n"
-        msg += "\n```"
+
+        channel_conf = await self.config.channel(channel).all()
+        guild_conf = await self.config.guild(ctx.guild).all()
+
+        enabled = "No (Globally)"
+
+        if channel_conf.get('enabled', None) is not None:
+            if channel_conf.get('enabled'):
+                enabled = "Yes (Channel)"
+            elif not channel_conf.get('enabled'):
+                enabled = "No (Channel)"
+        elif guild_conf.get('enabled', None):
+            enabled = "Yes (Globally)"
+
+        ext = guild_conf.get("types"), "Globally"
+
+        if isinstance(channel_conf.get("types"), list):
+            ext = channel_conf.get("types"), "Channel"
+
+        msg = f"```\nChannel enabled: {enabled}\nAllowed types in this channel: {', '.join(ext[0])} ({ext[1]})\n```"
         await ctx.send(msg)
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        allowed_types = await self.config.channel(message.channel).types()
-        allowed_channel = await self.config.channel(message.channel).enabled()
-        if not message.author.bot and allowed_channel and message.attachments:
+        if message.author.bot:
+            return
+
+        channel_types = await self.config.channel(message.channel).types()
+        guild_allowed = (await self.config.guild(message.guild).all()).get('enabled', None)
+        channel_allowed = (await self.config.channel(message.channel).all()).get('enabled', None)
+
+        allowed_types = await self.config.guild(message.guild).types() if channel_types == "Guild" else channel_types
+        allowed_channel = channel_allowed if channel_allowed is not None else guild_allowed
+        print(f"{allowed_types=}, {allowed_channel=}")
+
+        if allowed_channel and message.attachments:
             for attachment in message.attachments:
                 if attachment.filename.split(".")[-1].lower() not in allowed_types:
                     await message.delete()
