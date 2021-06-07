@@ -155,7 +155,7 @@ class Cleanerr(commands.Cog):
                     title = "This is not an image"
                     description = "To help guard our users against malware, we only allow image uploads." \
                                   "\nIf you posted logs, please upload them to " \
-                                  "[Pastebin](https://pastebin.com) " \
+                                  "[0Bin](https://0bin.net) " \
                                   "or [Gist](https://gist.github.com/)" \
                                   "\n**do not upload** the file as an attachment."
                     foot = f"Called by {message.author}"
