@@ -1,0 +1,16 @@
+{
+    "author": [
+        "Roxedus"
+    ],
+    "install_msg": "Im going to try not crash your server",
+    "name": "Let me orange that for you",
+    "short": "Let me orange that for you",
+    "description": "Let me orange that for you",
+    "requirements": [
+        "fuzzywuzzy"
+    ],
+    "tags": [
+        "Moderation"
+    ],
+    "hidden": false
+}
