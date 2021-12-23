@@ -62,8 +62,11 @@ class Lmotfy(commands.Cog):
         await ctx.send(embed=embed)
 
     async def _get_index(self):
-        with urllib.request.urlopen(self._orange) as response:
-            self._data = json.load(response)
+        try:
+            with urllib.request.urlopen(self._orange) as response:
+                self._data = json.load(response)
+        except Exception:
+            pass
 
     class Cacher():
         def __init__(self, bot):
