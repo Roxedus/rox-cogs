@@ -61,7 +61,7 @@ class Lmotfy(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    async def _get_index(self):
+    def _get_index(self):
         try:
             with urllib.request.urlopen(self._orange) as response:
                 self._data = json.load(response)
@@ -74,5 +74,5 @@ class Lmotfy(commands.Cog):
 
         async def loop(self):
             while True:
-                await self.bot._get_index()
+                self.bot._get_index()
                 await asyncio.sleep(int(60*60*12))
