@@ -59,12 +59,12 @@ class Lmotfy(commands.Cog):
                 post = self.posts[match["ref"]]
 
                 embed.add_field(name=post['title'],
-                                value=f"{post['content'][:800]}\n\nScore: {match['score']}\n[Link]({post['link']})",
+                                value=f"{post['content'][:100]}\n\nScore: {match['score']}\n[Link]({post['link']})",
                                 inline=False)
 
                 if matchMap["count"] >= 7:
                     break
-                if matchMap["score"] < 4:
+                if matchMap["score"] < 14:
                     break
 
             await ctx.send(embed=embed)
