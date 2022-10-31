@@ -6,10 +6,7 @@
     "name": "Let me orange that for you",
     "short": "Let me orange that for you",
     "description": "Let me orange that for you",
-    "requirements": [
-        "lunr",
-        "feedparser"
-    ],
+    "requirements": [],
     "tags": [
         "Moderation"
     ],
