@@ -61,7 +61,7 @@ class Lmotfy(commands.Cog):
 
             count = 0
 
-            for match in matches["results"][::-1]:
+            for match in matches["results"]:
                 count += 1
                 postTime = int(datetime.datetime.strptime(
                     match["date"], "%Y-%m-%d").replace(tzinfo=datetime.timezone.utc).timestamp())
