@@ -56,7 +56,7 @@ class Cleanerr(commands.Cog):
     async def ext_channel(self, ctx: commands.Context, channel: Optional[discord.TextChannel] = None,
                           *, extentions: str = "guild"):
         """
-        Sets the extentions for the cleaner in the current, or mentioned channel.
+        Sets the extensions for the cleaner in the current, or mentioned channel.
         If no mention is passed, it sets the Default value
 
         Default = Inherits the Guild default
@@ -162,7 +162,7 @@ class Cleanerr(commands.Cog):
                     embed = discord.Embed(
                         title=title, colour=message.author.colour, description=description)
                     embed.set_footer(
-                        text=foot, icon_url=message.author.avatar_url)
+                        text=foot, icon_url=message.author.display_avatar.url)
                     await message.channel.send(content=msg_content, embed=embed)
-                    self.log.info("%s posted a prohibited attatchment in %s:%s" %
+                    self.log.info("%s posted a prohibited attachment in %s:%s" %
                                   (message.author.name, message.guild.name, message.channel.name))

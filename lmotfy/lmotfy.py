@@ -48,7 +48,7 @@ class Lmotfy(commands.Cog):
 
             matches = await self.get_result(words)
 
-            avatar = self.bot.user.avatar_url_as(format=None, static_format="png", size=1024)
+            avatar = self.bot.user.display_avatar.replace(static_format="png", size=1024).url
             embed = discord.Embed(color=0xF97C00, url=f"{self._orange}/search/?q={urllib.parse.quote(words)}")
             embed.set_author(name=self.bot.user.name, icon_url=avatar)
             embed.title = f"Here is the results of the search for `{words}`"
