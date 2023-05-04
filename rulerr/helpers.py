@@ -75,7 +75,7 @@ class RuleHelper:
             return None
 
     async def _create_embed(self, text: str = None, date: str = None):
-        avatar = self.bot.user.avatar_url_as(format=None, static_format="png", size=1024)
+        avatar = self.bot.user.display_avatar.replace(static_format="png", size=1024).url
         embed = discord.Embed(color=0xD9C04D)
         embed.set_author(name=self.bot.user.name, icon_url=avatar)
         if text:

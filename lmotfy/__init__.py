@@ -1,6 +1,6 @@
 from lmotfy.lmotfy import Lmotfy
 
 
-def setup(bot):
+async def setup(bot):
     n = Lmotfy(bot)
-    bot.add_cog(n)
+    await bot.add_cog(n)
