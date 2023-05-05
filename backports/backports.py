@@ -35,10 +35,10 @@ class Backports(commands.Cog):
             userCreatedDate = int(member.created_at.timestamp())
             createdOn = f"<t:{userCreatedDate}> that is <t:{userCreatedDate}:R>"
             userIndex = members.index(member) + 1
-            formattedString += f"**#{userIndex}** {user.mention} - {createdOn}\n"
+            formattedString += f"**#{userIndex}** {user.name}#{user.discriminator} - {createdOn}\n"
 
         pages = pagify(formattedString, delims=("\n"))
-        pages = [{"embed": discord.Embed(description=page, title="Oldest users on the server")} for page in pages]
+        pages = [{"embed": discord.Embed(description=page, title="Oldest account on the server")} for page in pages]
 
         if len(pages) == 1:
             await ctx.send(**pages[0])
