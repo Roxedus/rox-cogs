@@ -1,8 +1,8 @@
 # Bot Packages
 import discord
 from redbot.core import commands
-from redbot.core.utils.embed import randomize_colour
 from redbot.core.bot import Red
+from redbot.core.utils.embed import randomize_colour
 
 import logging
 from typing import Optional
