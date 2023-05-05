@@ -98,7 +98,7 @@ class Backports(commands.Cog):
         members = []
         pageMembers = False
         for member in role.members:
-            members.append(member.mention)
+            members.append(f"{member.name}#{member.discriminator}")
         members = ", ".join(members)
 
         if len(members) > 1024:
@@ -140,7 +140,7 @@ class Backports(commands.Cog):
             for ind, page in enumerate(pages):
                 pagedEmbed = discord.Embed.from_dict(copy.deepcopy(embed.to_dict()))
                 pagedEmbed.remove_field(theField - 1)
-                pagedEmbed.add_field(name=f"Users with the role({len(role.members)})", value=page, inline=False)
+                pagedEmbed.add_field(name=f"Users with the role({len(role.members)})", value=page.strip(", "), inline=False)
                 pagedEmbed.set_footer(text=f"Page {ind + 1} of {len(pages)}")
                 selectObject.append({"embed": pagedEmbed})
             await SimpleMenu(selectObject).start(ctx)
