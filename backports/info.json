@@ -1,0 +1,12 @@
+{
+    "author" : ["Roxedus"],
+    "install_msg" : "You've just installed my backported cog!",
+    "name" : "Backports",
+    "short" : "Commands that originates from my other bots",
+    "description" : "Commands that originates from my other bots",
+    "required_cogs": {},
+    "requirements": [],
+    "min_bot_version": "3.5.0",
+    "tags": [],
+    "type": "COG"
+}
