@@ -10,5 +10,6 @@
     "tags": [
         "Moderation"
     ],
+    "min_bot_version": "3.5.0",
     "hidden": false
 }
