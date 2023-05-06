@@ -3,7 +3,7 @@ import discord
 from redbot.core import Config, checks, commands
 
 import logging
-from typing import Optional
+from typing import Optional, Union
 
 
 class Cleanerr(commands.Cog):
@@ -138,6 +138,8 @@ class Cleanerr(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.bot:
+            return
+        if isinstance(message.channel, Union[discord.channel.DMChannel, discord.channel.GroupChannel]):
             return
 
         channel_types = await self.config.channel(message.channel).types()
