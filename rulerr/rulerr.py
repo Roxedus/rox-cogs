@@ -19,7 +19,7 @@ _ = Translator('Rulerr', __file__)
 
 @cog_i18n(_)
 class Rulerr(commands.Cog):
-    """Cog to manage laws with rules"""
+    """Cog to manage ruleset with rules"""
 
     def __init__(self, bot: Red):
         self.bot = bot
@@ -48,8 +48,10 @@ class Rulerr(commands.Cog):
 
     @commands.guild_only()
     @commands.command(name="rule")
-    async def rules(self, ctx, user: Optional[discord.Member] = None, law: Union[int, str] = None, *, num: str = None):
-        """Command to explicit get the rules in a law"""
+    async def rules(self, ctx, user: Optional[discord.Member] = None, ruleset: Union[int, str] = None, *, num: str = None):
+        """Command to explicit get the rules in a ruleset"""
+
+        law = ruleset
 
         if isinstance(law, str):
             law = law.lower()
@@ -71,14 +73,14 @@ class Rulerr(commands.Cog):
         formated = await rules.get_rules_formatted()
 
         if not formated:
-            return await ctx.send(_('There is currently no laws set up'))
+            return await ctx.send(_('There is currently no rulesets set up'))
 
         if rule_text is None:
-            return await ctx.send("**{_txt}:**\n{_list}".format(_txt=_('Lists all laws for this guild'),
+            return await ctx.send("**{_txt}:**\n{_list}".format(_txt=_('Lists all rulesets for this guild'),
                                                                 _list=formated))
 
         if rule_text == "":
-            return await ctx.send(_('This law is completely empty'))
+            return await ctx.send(_('This ruleset is completely empty'))
 
         # Get only specified rules
         if num is not None:
@@ -97,7 +99,7 @@ class Rulerr(commands.Cog):
                 await ctx.send(_('Could not find the rule you were looking for'))
             elif law != await rules.get_settings("default_rule"):
                 await ctx.send(content=content, embed=await self.helper._create_embed(
-                    "**{_txt} {law}**\n".format(_txt=_('The rules for the law'), law=law) + partial_rules))
+                    "**{_txt} {law}**\n".format(_txt=_('The rules for the ruleset'), law=law) + partial_rules))
             else:
                 await ctx.send(content=content, embed=await self.helper._create_embed(partial_rules, date))
         else:
@@ -105,26 +107,28 @@ class Rulerr(commands.Cog):
 
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
-    @commands.group(name="ruleset")
+    @commands.group(name="rset")
     async def _rule_set(self, ctx):
-        """Group for managing rules and laws"""
+        """Group for managing rulesets and rules"""
 
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
-    @_rule_set.group(name="laws")
+    @_rule_set.group(name="rulesets")
     async def _rule_settings(self, ctx):
-        """Commands for managing rules and laws"""
+        """Commands for managing ruleset and ruless"""
 
     @_rule_settings.command(name="list")
     async def listrules(self, ctx):
-        """Lists the current rules"""
+        """Lists the current rulesets"""
         rules = RuleManager(self.config.guild(ctx.guild))
         await ctx.send("**{}**:\n{}".format(
-            _('The following laws are in the lawbook'), await rules.get_rules_formatted()))
+            _('The following rulesets are configured'), await rules.get_rules_formatted()))
 
     @_rule_settings.command(name="new")
-    async def newrules(self, ctx, law, *, newrule: str = None):
-        """Create a new law, with rules"""
+    async def newrules(self, ctx, ruleset, *, newrule: str = None):
+        """Create a new ruleset, with rules"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -134,7 +138,7 @@ class Rulerr(commands.Cog):
         added = await rules.add_rule(law, newrule)
         new_rule = await config.rules.get_raw(law)
 
-        title = (_('The law {law} already exists') if not added else _('Law {law} added')).format(law=law)
+        title = (_('The ruleset {ruleset} already exists') if not added else _('Ruleset {ruleset} added')).format(ruleset=law)
 
         description = _('RuleText') + f':\n```diff\n{new_rule["rule_text"][:980]}\n```'
         if new_rule.get('alternate'):
@@ -146,8 +150,10 @@ class Rulerr(commands.Cog):
         await ctx.send(embed=embed)
 
     @ _rule_settings.command(name="plaintext")
-    async def plaintext(self, ctx, law):
-        """Sends the law in plaintext"""
+    async def plaintext(self, ctx, ruleset):
+        """Sends the ruleset in plaintext"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -156,11 +162,13 @@ class Rulerr(commands.Cog):
             rule_text = await self.config.guild(ctx.guild).rules.get_raw(law)
             await ctx.send("```\n" + rule_text["rule_text"] + "\n```")
         except KeyError:
-            await ctx.send(_('Please ensure {law} is a valid rule').format(law=law))
+            await ctx.send(_('Please ensure {ruleset} is a valid ruleset').format(ruleset=law))
 
     @ _rule_settings.command(name="remove")
-    async def removerules(self, ctx, law):
-        """Removes the law"""
+    async def removerules(self, ctx, ruleset):
+        """Removes the plaintext"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -170,13 +178,15 @@ class Rulerr(commands.Cog):
         await self.helper._remove_reactions(ctx, rules, law)
         try:
             await rules.remove_rule(law)
-            await ctx.send(_('Law removed'))
+            await ctx.send(_('Ruleset removed'))
         except KeyError:
-            await ctx.send(_('This law does not exist'))
+            await ctx.send(_('This ruleset does not exist'))
 
     @ _rule_settings.command(name="update")
-    async def updaterules(self, ctx, law, *, newrule):
-        """Updates the law"""
+    async def updaterules(self, ctx, ruleset, *, newrule):
+        """Updates the ruleset"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -187,11 +197,13 @@ class Rulerr(commands.Cog):
             await rules.edit_rule(law, newrule)
             await self.helper._update_messages(ctx, rules)
         except KeyError:
-            await ctx.send(_('Could not find this law'))
+            await ctx.send(_('Could not find this ruleset'))
 
     @ _rule_settings.command(name="default")
-    async def set_default_rule(self, ctx, law):
-        """Set the default law for this guild"""
+    async def set_default_rule(self, ctx, ruleset):
+        """Set the default ruleset for this guild"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -204,13 +216,13 @@ class Rulerr(commands.Cog):
         if rule_text is None:
             return await ctx.send(
                 "{_not}.\n\n**{_these}**:\n{_formated}".format(
-                    _not=_('This law is not in the lawbook'),
-                    _these=_('The following laws are in the lawbook'),
+                    _not=_('This ruleset is not configured'),
+                    _these=_('The following rulesets are configured'),
                     _formated=await rules.get_rules_formatted()
                 )
             )
         await rules.change_setting("default_rule", law)
-        await ctx.send(_('{law} is now the default law').format(law=law))
+        await ctx.send(_('{ruleset} is now the default ruleset').format(ruleset=law))
 
     @ _rule_settings.command(name="prefix")
     async def set_prefix(self, ctx, prefix):
@@ -232,8 +244,10 @@ class Rulerr(commands.Cog):
         """Commands for setting up automatically message updating"""
 
     @ _auto_settings.command(name="post")
-    async def postauto(self, ctx, law):
-        """Sends a message that automatically updates when the law updates"""
+    async def postauto(self, ctx, ruleset):
+        """Sends a message that automatically updates when the ruleset updates"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -245,14 +259,14 @@ class Rulerr(commands.Cog):
         if rule_text is None:
             return await ctx.send(
                 "{_not}.\n\n**{_these}**:\n{_formated}".format(
-                    _not=_('This law is not in the lawbook'),
-                    _these=_('The following laws are in the lawbook'),
+                    _not=_('This ruleset is not configured'),
+                    _these=_('The following rulesets are configured'),
                     _formated=await rules.get_rules_formatted()
                 )
             )
 
         if rule_text == "":
-            return await ctx.send(_('This law is completly empty'))
+            return await ctx.send(_('This ruleset is completly empty'))
 
         embed = await self.helper._create_embed(rule_text, date)
         msg = await ctx.send(embed=embed)
@@ -276,8 +290,10 @@ class Rulerr(commands.Cog):
                 list_command=f'`{ctx.prefix}autoset list`'))
 
     @ _auto_settings.command(name="add")
-    async def autorules(self, ctx, law, link):
+    async def autorules(self, ctx, ruleset, link):
         """Adds a old message from the bot to the list of automatically updated messages"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -297,7 +313,7 @@ class Rulerr(commands.Cog):
         elif added:
             await ctx.send(_('Message now set to automatically update'))
         else:
-            await ctx.send(_('This law does not exist'))
+            await ctx.send(_('This ruleset does not exist'))
 
         await self.helper._update_messages(ctx, rules, name=law)
 
@@ -335,8 +351,10 @@ class Rulerr(commands.Cog):
         """Commands for setting up alternate rules to DMs triggered by reactions"""
 
     @ _alt_settings.command(name="update")
-    async def edit_alternate(self, ctx, law, *, newrule):
-        """Update the law with a alternate version"""
+    async def edit_alternate(self, ctx, ruleset, *, newrule):
+        """Update the ruleset with a alternate version"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -344,13 +362,15 @@ class Rulerr(commands.Cog):
         rules = RuleManager(self.config.guild(ctx.guild))
         try:
             await rules.edit_rule(law, newrule, alternate=True)
-            await ctx.send(_('Alternate law updated'))
+            await ctx.send(_('Alternate ruleset updated'))
         except KeyError:
-            await ctx.send(_('Could not find this law'))
+            await ctx.send(_('Could not find this ruleset'))
 
     @ _alt_settings.command(name="remove")
-    async def remove_alternate(self, ctx, law):
-        """Removes the alternate law attatched to the law"""
+    async def remove_alternate(self, ctx, ruleset):
+        """Removes the alternate ruleset attatched to the main ruleset"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -358,13 +378,15 @@ class Rulerr(commands.Cog):
         rules = RuleManager(self.config.guild(ctx.guild))
         try:
             await rules.remove_rule(law, alternate=True)
-            await ctx.send(_('Alternate law removed'))
+            await ctx.send(_('Alternate ruleset removed'))
         except KeyError:
-            await ctx.send(_('Could not find this law'))
+            await ctx.send(_('Could not find this ruleset'))
 
     @ _alt_settings.command(name="list")
-    async def show_alternate(self, ctx, law: str = None):
-        """Lists the alternate laws attatched to the law"""
+    async def show_alternate(self, ctx, ruleset: str = None):
+        """Lists the alternate rulesets attatched to the ruleset"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -375,12 +397,12 @@ class Rulerr(commands.Cog):
         if rule_text is not None:
             await ctx.send("```\n" + rule_text + "\n```")
         else:
-            return await ctx.send("**{_txt}:**\n{_list}".format(_txt=_('Lists all alternate laws for this guild'),
+            return await ctx.send("**{_txt}:**\n{_list}".format(_txt=_('Lists all alternate ruleset for this guild'),
                                                                 _list=await rules.get_rules_formatted(alternate=True)))
 
     @ _alt_settings.command(name="auto_list")
     async def _react_list(self, ctx):
-        """Lists the alternate laws set up with reactions"""
+        """Lists the alternate rulesets set up with reactions"""
 
         rules = RuleManager(self.config.guild(ctx.guild))
         react_messages = await rules.get_settings("react_rules")
@@ -396,8 +418,10 @@ class Rulerr(commands.Cog):
         await ctx.send(list_message)
 
     @ _alt_settings.command(name="link")
-    async def link_alternate(self, ctx, law, link):
+    async def link_alternate(self, ctx, ruleset, link):
         """Adds a old message from the bot to the list of automatically updated react-messages"""
+
+        law = ruleset
 
         if law is not None:
             law = law.lower()
@@ -423,7 +447,7 @@ class Rulerr(commands.Cog):
             except Exception:
                 await ctx.send(_('I had some trouble reacting'))
         else:
-            await ctx.send(_('This law does not exist'))
+            await ctx.send(_('This ruleset does not exist'))
 
     @ _alt_settings.command(name="unlink")
     async def unlink_alternate(self, ctx, message_link):
@@ -597,14 +621,14 @@ class Rulerr(commands.Cog):
         if rule_text is None:
             return await context.send(
                 "{_not_default}.\n\n**{_these}**:\n{_formated}".format(
-                    _not_default=_('There needs to be a default law for this guild for this to work'),
-                    _these=_('The following laws are in the lawbook'),
+                    _not_default=_('There needs to be a default ruleset for this guild for this to work'),
+                    _these=_('The following rulesets are configured'),
                     _formated=await rules.get_rules_formatted()
                 )
             )
 
         if rule_text == "":
-            return await context.send(_('This law is completely empty'))
+            return await context.send(_('This ruleset is completely empty'))
 
         # Get only specified rules
         partial_rules = ""

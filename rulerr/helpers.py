@@ -30,7 +30,7 @@ class RuleHelper:
 
                     updated_text, date = await rules.get_rule_text(message["name"])
                     if updated_text is None:
-                        s_embed.add_field(name=_('Could not find the following law'), value=message["name"])
+                        s_embed.add_field(name=_('Could not find the following ruleset'), value=message["name"])
                         continue
 
                     await asyncio.sleep(2)

@@ -2,380 +2,402 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-10-09 10:47+0200\n"
+"POT-Creation-Date: 2023-05-08 16:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: redgettext 3.3\n"
+"Generated-By: redgettext 3.4.2\n"
 
-#: rulerr\helpers.py:19
+#: rulerr/helpers.py:20
 msgid "Updating messages"
 msgstr ""
 
-#: rulerr\helpers.py:22
+#: rulerr/helpers.py:23
 msgid "Messages updated"
 msgstr ""
 
-#: rulerr\helpers.py:27
+#: rulerr/helpers.py:28
 msgid "Could not find this message"
 msgstr ""
 
-#: rulerr\helpers.py:32
-msgid "Could not find the following law"
+#: rulerr/helpers.py:33
+msgid "Could not find the following ruleset"
 msgstr ""
 
-#: rulerr\helpers.py:39
+#: rulerr/helpers.py:43
+msgid "Please react with {emoji} to agree to the rules"
+msgstr ""
+
+#: rulerr/helpers.py:47
 msgid "Updated messages"
 msgstr ""
 
-#: rulerr\helpers.py:41
+#: rulerr/helpers.py:49
 msgid "Some messages could not be found, please remove them manually"
 msgstr ""
 
-#: rulerr\helpers.py:76 rulerr\rulerr.py:136 rulerr\rulerr.py:499
-#: rulerr\rulerr.py:521
+#: rulerr/helpers.py:84 rulerr/rulerr.py:149 rulerr/rulerr.py:532
+#: rulerr/rulerr.py:554
 msgid "Edited at"
 msgstr ""
 
-#: rulerr\helpers.py:87
+#: rulerr/helpers.py:95
 msgid "Could not remove the reactions from the following message"
 msgstr ""
 
-#: rulerr\helpers.py:89
+#: rulerr/helpers.py:97
 msgid "Ensure the bot has access, or delete the reaction manually"
 msgstr ""
 
-#: rulerr\rulerr.py:23
+#: rulerr/rulerr.py:22
 #, docstring
-msgid "Cog to manage laws with rules"
+msgid "Cog to manage ruleset with rules"
 msgstr ""
 
-#: rulerr\rulerr.py:53
+#: rulerr/rulerr.py:52
 #, docstring
-msgid "Command to explicit get the rules in a law"
+msgid "Command to explicit get the rules in a ruleset"
 msgstr ""
 
-#: rulerr\rulerr.py:73
-msgid "There is currently no laws set up"
+#: rulerr/rulerr.py:59 rulerr/rulerr.py:647
+msgid "Hey please read the rules"
 msgstr ""
 
-#: rulerr\rulerr.py:76
-msgid "Lists all laws for this guild"
+#: rulerr/rulerr.py:76
+msgid "There is currently no rulesets set up"
 msgstr ""
 
-#: rulerr\rulerr.py:80 rulerr\rulerr.py:598
-msgid "This law is completely empty"
+#: rulerr/rulerr.py:79
+msgid "Lists all rulesets for this guild"
 msgstr ""
 
-#: rulerr\rulerr.py:96
+#: rulerr/rulerr.py:83 rulerr/rulerr.py:631
+msgid "This ruleset is completely empty"
+msgstr ""
+
+#: rulerr/rulerr.py:99
 msgid "Could not find the rule you were looking for"
 msgstr ""
 
-#: rulerr\rulerr.py:98
-msgid "The rules for the law"
+#: rulerr/rulerr.py:102
+msgid "The rules for the ruleset"
 msgstr ""
 
-#: rulerr\rulerr.py:108
+#: rulerr/rulerr.py:112
 #, docstring
-msgid "Group for managing rules and laws"
+msgid "Group for managing rulesets and rules"
 msgstr ""
 
-#: rulerr\rulerr.py:114
+#: rulerr/rulerr.py:118
 #, docstring
-msgid "Commands for managing rules and laws"
+msgid "Commands for managing ruleset and ruless"
 msgstr ""
 
-#: rulerr\rulerr.py:118
+#: rulerr/rulerr.py:122
 #, docstring
-msgid "Create a new law, with rules"
+msgid "Lists the current rulesets"
 msgstr ""
 
-#: rulerr\rulerr.py:128
-msgid "The law {law} already exists"
+#: rulerr/rulerr.py:125 rulerr/rulerr.py:220 rulerr/rulerr.py:263
+#: rulerr/rulerr.py:625
+msgid "The following rulesets are configured"
 msgstr ""
 
-#: rulerr\rulerr.py:128
-msgid "Law {law} added"
+#: rulerr/rulerr.py:129
+#, docstring
+msgid "Create a new ruleset, with rules"
 msgstr ""
 
-#: rulerr\rulerr.py:130
+#: rulerr/rulerr.py:141
+msgid "The ruleset {ruleset} already exists"
+msgstr ""
+
+#: rulerr/rulerr.py:141
+msgid "Ruleset {ruleset} added"
+msgstr ""
+
+#: rulerr/rulerr.py:143
 msgid "RuleText"
 msgstr ""
 
-#: rulerr\rulerr.py:132
+#: rulerr/rulerr.py:145
 msgid "AltText"
 msgstr ""
 
-#: rulerr\rulerr.py:141
+#: rulerr/rulerr.py:154
 #, docstring
-msgid "Sends the law in plaintext"
+msgid "Sends the ruleset in plaintext"
 msgstr ""
 
-#: rulerr\rulerr.py:150
-msgid "Please ensure {law} is a valid rule"
+#: rulerr/rulerr.py:165
+msgid "Please ensure {ruleset} is a valid ruleset"
 msgstr ""
 
-#: rulerr\rulerr.py:154
+#: rulerr/rulerr.py:169
 #, docstring
-msgid "Removes the law"
+msgid "Removes the plaintext"
 msgstr ""
 
-#: rulerr\rulerr.py:164
-msgid "Law removed"
+#: rulerr/rulerr.py:181
+msgid "Ruleset removed"
 msgstr ""
 
-#: rulerr\rulerr.py:166 rulerr\rulerr.py:291 rulerr\rulerr.py:417
-msgid "This law does not exist"
+#: rulerr/rulerr.py:183 rulerr/rulerr.py:316 rulerr/rulerr.py:450
+msgid "This ruleset does not exist"
 msgstr ""
 
-#: rulerr\rulerr.py:170
+#: rulerr/rulerr.py:187
 #, docstring
-msgid "Updates the law"
+msgid "Updates the ruleset"
 msgstr ""
 
-#: rulerr\rulerr.py:181 rulerr\rulerr.py:340 rulerr\rulerr.py:354
-msgid "Could not find this law"
+#: rulerr/rulerr.py:200 rulerr/rulerr.py:367 rulerr/rulerr.py:383
+msgid "Could not find this ruleset"
 msgstr ""
 
-#: rulerr\rulerr.py:185
+#: rulerr/rulerr.py:204
 #, docstring
-msgid "Set the default law for this guild"
+msgid "Set the default ruleset for this guild"
 msgstr ""
 
-#: rulerr\rulerr.py:198 rulerr\rulerr.py:239
-msgid "This law is not in the lawbook"
+#: rulerr/rulerr.py:219 rulerr/rulerr.py:262
+msgid "This ruleset is not configured"
 msgstr ""
 
-#: rulerr\rulerr.py:199 rulerr\rulerr.py:240 rulerr\rulerr.py:592
-msgid "The following laws are in the lawbook"
+#: rulerr/rulerr.py:225
+msgid "{ruleset} is now the default ruleset"
 msgstr ""
 
-#: rulerr\rulerr.py:204
-msgid "{law} is now the default law"
-msgstr ""
-
-#: rulerr\rulerr.py:208
+#: rulerr/rulerr.py:229
 #, docstring
 msgid "Set the default on_messageprefix for this guild"
 msgstr ""
 
-#: rulerr\rulerr.py:217
+#: rulerr/rulerr.py:238
 msgid "{prefix} is now the default prefix"
 msgstr ""
 
-#: rulerr\rulerr.py:223
+#: rulerr/rulerr.py:244
 #, docstring
 msgid "Commands for setting up automatically message updating"
 msgstr ""
 
-#: rulerr\rulerr.py:227
+#: rulerr/rulerr.py:248
 #, docstring
-msgid "Sends a message that automatically updates when the law updates"
+msgid "Sends a message that automatically updates when the ruleset updates"
 msgstr ""
 
-#: rulerr\rulerr.py:246
-msgid "This law is completly empty"
+#: rulerr/rulerr.py:269
+msgid "This ruleset is completly empty"
 msgstr ""
 
-#: rulerr\rulerr.py:252
+#: rulerr/rulerr.py:275
 msgid "The message now updates automatically"
 msgstr ""
 
-#: rulerr\rulerr.py:258
+#: rulerr/rulerr.py:281
 #, docstring
 msgid "Remove a message from the list of messages that automatically updates"
 msgstr ""
 
-#: rulerr\rulerr.py:264
+#: rulerr/rulerr.py:287
 msgid "Message removed from list"
 msgstr ""
 
-#: rulerr\rulerr.py:266 rulerr\rulerr.py:427
+#: rulerr/rulerr.py:289 rulerr/rulerr.py:460
 msgid "Ensure the link is used with {list_command}"
 msgstr ""
 
-#: rulerr\rulerr.py:271
+#: rulerr/rulerr.py:294
 #, docstring
 msgid ""
 "Adds a old message from the bot to the list of automatically updated "
 "messages"
 msgstr ""
 
-#: rulerr\rulerr.py:278 rulerr\rulerr.py:398 rulerr\rulerr.py:456
+#: rulerr/rulerr.py:303 rulerr/rulerr.py:431 rulerr/rulerr.py:489
 msgid "Could not find the message"
 msgstr ""
 
-#: rulerr\rulerr.py:280 rulerr\rulerr.py:400 rulerr\rulerr.py:458
+#: rulerr/rulerr.py:305 rulerr/rulerr.py:433 rulerr/rulerr.py:491
 msgid "This only works on messages owned by the bot"
 msgstr ""
 
-#: rulerr\rulerr.py:287 rulerr\rulerr.py:407
+#: rulerr/rulerr.py:312 rulerr/rulerr.py:440
 msgid "Message already set to automatically update"
 msgstr ""
 
-#: rulerr\rulerr.py:289
+#: rulerr/rulerr.py:314
 msgid "Message now set to automatically update"
 msgstr ""
 
-#: rulerr\rulerr.py:297
+#: rulerr/rulerr.py:322
 #, docstring
 msgid "Sends a list of the messages set up to automatically update"
 msgstr ""
 
-#: rulerr\rulerr.py:304
+#: rulerr/rulerr.py:329
 msgid "No message is currently set up for automatic updates"
 msgstr ""
 
-#: rulerr\rulerr.py:307
+#: rulerr/rulerr.py:332
 msgid "Messages set to automatically update"
 msgstr ""
 
-#: rulerr\rulerr.py:317
+#: rulerr/rulerr.py:342
 #, docstring
 msgid "Forces a update for automatic messages"
 msgstr ""
 
-#: rulerr\rulerr.py:326
+#: rulerr/rulerr.py:351
 #, docstring
 msgid "Commands for setting up alternate rules to DMs triggered by reactions"
 msgstr ""
 
-#: rulerr\rulerr.py:330
+#: rulerr/rulerr.py:355
 #, docstring
-msgid "Update the law with a alternate version"
+msgid "Update the ruleset with a alternate version"
 msgstr ""
 
-#: rulerr\rulerr.py:338
-msgid "Alternate law updated"
+#: rulerr/rulerr.py:365
+msgid "Alternate ruleset updated"
 msgstr ""
 
-#: rulerr\rulerr.py:344
+#: rulerr/rulerr.py:371
 #, docstring
-msgid "Removes the alternate law attatched to the law"
+msgid "Removes the alternate ruleset attatched to the main ruleset"
 msgstr ""
 
-#: rulerr\rulerr.py:352
-msgid "Alternate law removed"
+#: rulerr/rulerr.py:381
+msgid "Alternate ruleset removed"
 msgstr ""
 
-#: rulerr\rulerr.py:358
+#: rulerr/rulerr.py:387
 #, docstring
-msgid "Lists the alternate laws attatched to the law"
+msgid "Lists the alternate rulesets attatched to the ruleset"
 msgstr ""
 
-#: rulerr\rulerr.py:369
-msgid "Lists all alternate laws for this guild"
+#: rulerr/rulerr.py:400
+msgid "Lists all alternate ruleset for this guild"
 msgstr ""
 
-#: rulerr\rulerr.py:374
+#: rulerr/rulerr.py:405
 #, docstring
-msgid "Lists the alternate laws set up with reactions"
+msgid "Lists the alternate rulesets set up with reactions"
 msgstr ""
 
-#: rulerr\rulerr.py:379
+#: rulerr/rulerr.py:410
 msgid "Reaction-messages set to automatically update"
 msgstr ""
 
-#: rulerr\rulerr.py:382
+#: rulerr/rulerr.py:413
 msgid "No reaction-message is currently set up for automatic updates"
 msgstr ""
 
-#: rulerr\rulerr.py:391
+#: rulerr/rulerr.py:422
 #, docstring
 msgid ""
 "Adds a old message from the bot to the list of automatically updated react-"
 "messages"
 msgstr ""
 
-#: rulerr\rulerr.py:413
+#: rulerr/rulerr.py:446
 msgid "React-message now set to automatically update"
 msgstr ""
 
-#: rulerr\rulerr.py:415
+#: rulerr/rulerr.py:448
 msgid "I had some trouble reacting"
 msgstr ""
 
-#: rulerr\rulerr.py:421
+#: rulerr/rulerr.py:454
 #, docstring
 msgid ""
 "Remove a react-message from the list of messages that automatically updates"
 msgstr ""
 
-#: rulerr\rulerr.py:434
+#: rulerr/rulerr.py:467
 msgid "React-message removed from list"
 msgstr ""
 
-#: rulerr\rulerr.py:436
+#: rulerr/rulerr.py:469
 msgid "Message was never set as a react-message"
 msgstr ""
 
-#: rulerr\rulerr.py:442
+#: rulerr/rulerr.py:475
 #, docstring
 msgid "Commands for setting reaction based rule-agreement"
 msgstr ""
 
-#: rulerr\rulerr.py:446
+#: rulerr/rulerr.py:479
 #, docstring
 msgid "Sets the reaction based rule-agreement"
 msgstr ""
 
-#: rulerr\rulerr.py:454
+#: rulerr/rulerr.py:487
 msgid "There is no agreement role set"
 msgstr ""
 
-#: rulerr\rulerr.py:461
+#: rulerr/rulerr.py:494
 msgid ""
 "This is not a auto updating message, would you like to make it one based on "
 "the default rule?"
 msgstr ""
 
-#: rulerr\rulerr.py:480
+#: rulerr/rulerr.py:513
 msgid "There is already a agreement message set up for this guild, overwrite?"
 msgstr ""
 
-#: rulerr\rulerr.py:505
+#: rulerr/rulerr.py:530
+msgid "This is now the agreement message"
+msgstr ""
+
+#: rulerr/rulerr.py:538
 #, docstring
 msgid "Gets the message for the reaction based rule-agreement"
 msgstr ""
 
-#: rulerr\rulerr.py:513 rulerr\rulerr.py:517
+#: rulerr/rulerr.py:546 rulerr/rulerr.py:550
 msgid "No react message is set"
 msgstr ""
 
-#: rulerr\rulerr.py:527
+#: rulerr/rulerr.py:552
+msgid "This is agreement message"
+msgstr ""
+
+#: rulerr/rulerr.py:560
 #, docstring
 msgid "Sets the role for the reaction based rule-agreement"
 msgstr ""
 
-#: rulerr\rulerr.py:531
+#: rulerr/rulerr.py:564
 msgid "is now the role assigned on agreement"
 msgstr ""
 
-#: rulerr\rulerr.py:537
+#: rulerr/rulerr.py:570
 #, docstring
 msgid ""
 "Removes the message for the reaction based rule-agreement from the list"
 msgstr ""
 
-#: rulerr\rulerr.py:549
+#: rulerr/rulerr.py:582
 msgid "Cleared the agreement message"
 msgstr ""
 
-#: rulerr\rulerr.py:591
-msgid "There needs to be a default law for this guild for this to work"
+#: rulerr/rulerr.py:624
+msgid "There needs to be a default ruleset for this guild for this to work"
 msgstr ""
 
-#: rulerr\rulerr.py:637
+#: rulerr/rulerr.py:675
 msgid "Agreed to the rules"
 msgstr ""
 
-#: rulerr\rulerr.py:641 rulerr\rulerr.py:698
+#: rulerr/rulerr.py:679 rulerr/rulerr.py:736
 msgid "Tell a mod to fix my perms"
 msgstr ""
 
-#: rulerr\rulerr.py:720
+#: rulerr/rulerr.py:758
 msgid "I can't send you messages"
 msgstr ""
