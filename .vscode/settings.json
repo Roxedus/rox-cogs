@@ -11,5 +11,9 @@
     "[Dockerfile]": {
         "editor.formatOnSave": false
     },
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "cSpell.words": [
+        "ruleset",
+        "rulesets"
+    ]
 }

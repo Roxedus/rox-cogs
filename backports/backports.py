@@ -51,7 +51,7 @@ class Backports(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def toproles(self, ctx):
         """
-        Lists roles in order of the membercount
+        Lists roles in order of the member count
         """
 
         guildRoles = ctx.guild.roles
@@ -123,7 +123,7 @@ class Backports(commands.Cog):
         if role.is_integration():
             embed.add_field(name="Integration", value=role.is_integration())
         if role.is_premium_subscriber():
-            embed.add_field(name="Boostrole", value=role.is_premium_subscriber())
+            embed.add_field(name="Boost-role", value=role.is_premium_subscriber())
         embed.add_field(name="Hoisted", value=hoisted)
         if permissions:
             embed.add_field(name="Permissions", value=permissions, inline=False)

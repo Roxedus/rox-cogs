@@ -46,6 +46,6 @@ Eases some data-migration
 
 Some commands to assist in troubleshooting
 
-* `[p]f12` Promts the user to check their browser-console.
+* `[p]f12` Prompts the user to check their browser-console.
 
-* `[p]paste` Promts the user to share their nginx config.
+* `[p]paste` Prompts the user to share their nginx config.

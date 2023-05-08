@@ -54,7 +54,7 @@ class Cleanerr(commands.Cog):
     @channel.command(name="ext")
     @checks.admin_or_permissions(manage_messages=True)
     async def ext_channel(self, ctx: commands.Context, channel: Optional[discord.TextChannel] = None,
-                          *, extentions: str = "guild"):
+                          *, extensions: str = "guild"):
         """
         Sets the extensions for the cleaner in the current, or mentioned channel.
         If no mention is passed, it sets the Default value
@@ -64,16 +64,16 @@ class Cleanerr(commands.Cog):
 
         msg = "Cleaner is set to follow the guild allowlist"
 
-        if extentions == "guild":
-            extentions = "Guild"
+        if extensions == "guild":
+            extensions = "Guild"
         else:
-            extentions = list(extentions.lower().split(" "))
-            msg = f"Cleaner is set to allow the files with the extentions: {', '.join(extentions)}"
+            extensions = list(extensions.lower().split(" "))
+            msg = f"Cleaner is set to allow the files with the extensions: {', '.join(extensions)}"
 
         if not channel:
             channel = ctx.channel
 
-        await self.config.channel(channel).types.set(extentions)
+        await self.config.channel(channel).types.set(extensions)
         await ctx.send(msg + f" for {channel.mention}")
 
     @cleanerr.group()
@@ -95,18 +95,18 @@ class Cleanerr(commands.Cog):
 
     @guild.command(name="ext")
     @checks.admin_or_permissions(manage_messages=True)
-    async def ext_guild(self, ctx: commands.Context, *, extentions: str):
+    async def ext_guild(self, ctx: commands.Context, *, extensions: str):
         """
-        Sets the extentions for the cleaner in the guild
+        Sets the extensions for the cleaner in the guild
 
         Default = jpg png gif bmp
         """
 
-        extentions = list(extentions.lower().split(" "))
+        extensions = list(extensions.lower().split(" "))
 
-        await self.config.guild(ctx.guild).types.set(extentions)
+        await self.config.guild(ctx.guild).types.set(extensions)
         await ctx.send(
-            f"Cleaner is set to allow the files with the extentions: {', '.join(extentions)} for {ctx.guild.name}")
+            f"Cleaner is set to allow the files with the extensions: {', '.join(extensions)} for {ctx.guild.name}")
 
     @cleanerr.command(name="info")
     @checks.admin_or_permissions(manage_messages=True)

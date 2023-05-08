@@ -23,7 +23,7 @@ class Supporterr(commands.Cog):
     @commands.command(name="f12")  # , usage="<prefix> <search_query>"
     async def _f12(self, ctx, user: Optional[discord.Member] = None, *, tab: Optional[str] = "console"):
         """
-        Command to promt the user to send the output of their browser-console
+        Command to prompt the user to send the output of their browser-console
         """
 
         msg = f"Hey{' ' + user.mention if user else ''}! Please post a screenshot"\
@@ -49,7 +49,7 @@ class Supporterr(commands.Cog):
     @commands.command(name="paste", aliases=["share-nginx"])
     async def _paste_nginx(self, ctx, user: Optional[discord.Member] = None):
         """
-        Command to promt the user to send their nginx config
+        Command to prompt the user to send their nginx config
         """
 
         msg = f"Hey{' ' + user.mention if user else ''}! Please share your nginx config"

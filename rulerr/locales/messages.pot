@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-05-08 16:34+0200\n"
+"POT-Creation-Date: 2023-05-08 16:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Lists all rulesets for this guild"
 msgstr ""
 
-#: rulerr/rulerr.py:83 rulerr/rulerr.py:631
+#: rulerr/rulerr.py:83 rulerr/rulerr.py:269 rulerr/rulerr.py:631
 msgid "This ruleset is completely empty"
 msgstr ""
 
@@ -93,7 +93,7 @@ msgstr ""
 
 #: rulerr/rulerr.py:118
 #, docstring
-msgid "Commands for managing ruleset and ruless"
+msgid "Commands for managing rulesets and rules"
 msgstr ""
 
 #: rulerr/rulerr.py:122
@@ -173,7 +173,7 @@ msgstr ""
 
 #: rulerr/rulerr.py:229
 #, docstring
-msgid "Set the default on_messageprefix for this guild"
+msgid "Set the default on_message prefix for this guild"
 msgstr ""
 
 #: rulerr/rulerr.py:238
@@ -188,10 +188,6 @@ msgstr ""
 #: rulerr/rulerr.py:248
 #, docstring
 msgid "Sends a message that automatically updates when the ruleset updates"
-msgstr ""
-
-#: rulerr/rulerr.py:269
-msgid "This ruleset is completly empty"
 msgstr ""
 
 #: rulerr/rulerr.py:275
@@ -268,7 +264,7 @@ msgstr ""
 
 #: rulerr/rulerr.py:371
 #, docstring
-msgid "Removes the alternate ruleset attatched to the main ruleset"
+msgid "Removes the alternate ruleset attached to the main ruleset"
 msgstr ""
 
 #: rulerr/rulerr.py:381
@@ -277,7 +273,7 @@ msgstr ""
 
 #: rulerr/rulerr.py:387
 #, docstring
-msgid "Lists the alternate rulesets attatched to the ruleset"
+msgid "Lists the alternate rulesets attached to the ruleset"
 msgstr ""
 
 #: rulerr/rulerr.py:400

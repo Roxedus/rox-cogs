@@ -3,9 +3,9 @@
         "Roxedus"
     ],
     "install_msg": "Im going to try not crash your server",
-    "name": "Cleanerr",
-    "short": "Filetype allowlist",
-    "description": "Sets an allowlist for extentions in specified channels",
+    "name": "Rulerr",
+    "short": "Provide rule information to the user",
+    "description": "Implements multiple rulesets (some channels may have different rules), and presents them to the user easily when called out by another user",
     "tags": [
         "Moderation"
     ],

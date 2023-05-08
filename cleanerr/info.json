@@ -5,7 +5,7 @@
     "install_msg": "Im going to try not crash your server",
     "name": "Cleanerr",
     "short": "Filetype allowlist",
-    "description": "Sets an allowlist for extentions in specified channels",
+    "description": "Sets an allowlist for extensions in specified channels",
     "tags": [
         "Moderation"
     ],

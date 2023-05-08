@@ -7,10 +7,7 @@ import datetime
 import logging
 import urllib.parse
 import urllib.request
-from email import header
-from pprint import pprint
 from typing import Optional
-from wsgiref import headers
 
 import aiohttp
 

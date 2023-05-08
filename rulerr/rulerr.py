@@ -70,14 +70,14 @@ class Rulerr(commands.Cog):
 
         rule_text, date = await rules.get_rule_text(law)
 
-        formated = await rules.get_rules_formatted()
+        formatted = await rules.get_rules_formatted()
 
-        if not formated:
+        if not formatted:
             return await ctx.send(_('There is currently no rulesets set up'))
 
         if rule_text is None:
             return await ctx.send("**{_txt}:**\n{_list}".format(_txt=_('Lists all rulesets for this guild'),
-                                                                _list=formated))
+                                                                _list=formatted))
 
         if rule_text == "":
             return await ctx.send(_('This ruleset is completely empty'))
@@ -115,7 +115,7 @@ class Rulerr(commands.Cog):
     @checks.mod_or_permissions(manage_messages=True)
     @_rule_set.group(name="rulesets")
     async def _rule_settings(self, ctx):
-        """Commands for managing ruleset and ruless"""
+        """Commands for managing rulesets and rules"""
 
     @_rule_settings.command(name="list")
     async def listrules(self, ctx):
@@ -215,10 +215,10 @@ class Rulerr(commands.Cog):
 
         if rule_text is None:
             return await ctx.send(
-                "{_not}.\n\n**{_these}**:\n{_formated}".format(
+                "{_not}.\n\n**{_these}**:\n{_formatted}".format(
                     _not=_('This ruleset is not configured'),
                     _these=_('The following rulesets are configured'),
-                    _formated=await rules.get_rules_formatted()
+                    _formatted=await rules.get_rules_formatted()
                 )
             )
         await rules.change_setting("default_rule", law)
@@ -226,7 +226,7 @@ class Rulerr(commands.Cog):
 
     @ _rule_settings.command(name="prefix")
     async def set_prefix(self, ctx, prefix):
-        """Set the default on_messageprefix for this guild"""
+        """Set the default on_message prefix for this guild"""
 
         if prefix is not None:
             prefix = prefix.lower()
@@ -258,15 +258,15 @@ class Rulerr(commands.Cog):
 
         if rule_text is None:
             return await ctx.send(
-                "{_not}.\n\n**{_these}**:\n{_formated}".format(
+                "{_not}.\n\n**{_these}**:\n{_formatted}".format(
                     _not=_('This ruleset is not configured'),
                     _these=_('The following rulesets are configured'),
-                    _formated=await rules.get_rules_formatted()
+                    _formatted=await rules.get_rules_formatted()
                 )
             )
 
         if rule_text == "":
-            return await ctx.send(_('This ruleset is completly empty'))
+            return await ctx.send(_('This ruleset is completely empty'))
 
         embed = await self.helper._create_embed(rule_text, date)
         msg = await ctx.send(embed=embed)
@@ -368,7 +368,7 @@ class Rulerr(commands.Cog):
 
     @ _alt_settings.command(name="remove")
     async def remove_alternate(self, ctx, ruleset):
-        """Removes the alternate ruleset attatched to the main ruleset"""
+        """Removes the alternate ruleset attached to the main ruleset"""
 
         law = ruleset
 
@@ -384,7 +384,7 @@ class Rulerr(commands.Cog):
 
     @ _alt_settings.command(name="list")
     async def show_alternate(self, ctx, ruleset: str = None):
-        """Lists the alternate rulesets attatched to the ruleset"""
+        """Lists the alternate rulesets attached to the ruleset"""
 
         law = ruleset
 
@@ -620,10 +620,10 @@ class Rulerr(commands.Cog):
 
         if rule_text is None:
             return await context.send(
-                "{_not_default}.\n\n**{_these}**:\n{_formated}".format(
+                "{_not_default}.\n\n**{_these}**:\n{_formatted}".format(
                     _not_default=_('There needs to be a default ruleset for this guild for this to work'),
                     _these=_('The following rulesets are configured'),
-                    _formated=await rules.get_rules_formatted()
+                    _formatted=await rules.get_rules_formatted()
                 )
             )
 
