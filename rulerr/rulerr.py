@@ -57,6 +57,7 @@ class Rulerr(commands.Cog):
             law = law.lower()
 
         content = "{}! {}".format(user.mention, _('Hey please read the rules')) if user else None
+        embed = None
 
         config = self.config.guild(ctx.guild)
         rules = RuleManager(config)
@@ -84,7 +85,6 @@ class Rulerr(commands.Cog):
 
         # Get only specified rules
         if num is not None:
-            await ctx.message.delete()
             partial_rules = ""
 
             no_dupes = await rules.remove_duplicates(num.split())
@@ -98,12 +98,15 @@ class Rulerr(commands.Cog):
             if partial_rules == "":
                 await ctx.send(_('Could not find the rule you were looking for'))
             elif law != await rules.get_settings("default_rule"):
-                await ctx.send(content=content, embed=await self.helper._create_embed(
-                    "**{_txt} {law}**\n".format(_txt=_('The rules for the ruleset'), law=law) + partial_rules))
+                embed = await self.helper._create_embed(
+                    "**{_txt} {law}**\n".format(_txt=_('The rules for the ruleset'), law=law) + partial_rules
+                    )
             else:
-                await ctx.send(content=content, embed=await self.helper._create_embed(partial_rules, date))
+                embed = await self.helper._create_embed(partial_rules, date)
         else:
-            await ctx.send(content=content, embed=await self.helper._create_embed(rule_text, date))
+            embed = await self.helper._create_embed(rule_text, date)
+        embed.title = "Someone wants to remind you about the rules:"
+        await ctx.send(content=content, embed=embed)
 
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
@@ -646,7 +649,9 @@ class Rulerr(commands.Cog):
             user.id != message.author.id)] if message.mentions else None
         text = "{}! {}".format(', '.join(usrs), _('Hey please read the rules')) if usrs else None
 
-        await context.send(content=text, embed=await self.helper._create_embed(partial_rules, date))
+        embed = await self.helper._create_embed(partial_rules, date)
+        embed.title = "Someone wants to remind you about the rules:"
+        await context.send(content=text, embed=embed)
 
     @ commands.Cog.listener(name="on_raw_reaction_add")
     async def on_agreement_reaction(self, payload):
