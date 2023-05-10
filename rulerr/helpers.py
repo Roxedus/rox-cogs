@@ -82,7 +82,7 @@ class RuleHelper:
             embed.description = text
         if date:
             embed.set_footer(text=_('Edited at'))
-            embed.timestamp = discord.utils.format_dt(datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f'))
+            embed.timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
         return embed
 
     async def _remove_reactions(self, ctx, rules, to_match):
