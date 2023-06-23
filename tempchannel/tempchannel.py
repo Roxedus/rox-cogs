@@ -120,12 +120,15 @@ class TempChannel(commands.Cog):
         """
         Task to handle the closing of the channel
         """
+        thread = None
         try:
             self.log.debug("Starting open-loop in %s", close_msg.channel.name)
             await self._open_channel(close_msg=close_msg)
             await self._task_wait_until(until)
             self.log.debug("Done waiting in %s, closing", close_msg.channel.name)
             if forum_dict:
+                if forum_dict.get("content"):
+                    forum_dict["content"] += f"\n\nChatter prior to closing: {close_msg.jump_url}"
                 self.log.debug("Creating thread in %s", close_msg.channel.name)
                 forumId = await self.config.guild(close_msg.guild).temp_forum()
                 forum = close_msg.guild.get_channel_or_thread(forumId)
@@ -216,12 +219,12 @@ class TempChannel(commands.Cog):
     @app_commands.describe(start_time="Relative time to hold the channel open(1d2h3m4s).")
     @app_commands.describe(start_time="Start time")
     @_timed.command(name="open")
-    async def t_open(self, interaction: discord.Interaction, start_time: str = "s300") -> None:
+    async def t_open(self, interaction: discord.Interaction, start_time: str = "s300", channel: discord.TextChannel = None) -> None:
         """
-        Command to temporarily open the channel for a specigied amount of time
+        Command to temporarily open the channel for a specified amount of time
         """
 
-        channel = interaction.channel
+        channel = channel or interaction.channel
 
         if await self._get_channel_task(channel):
             return await interaction.response.send_message(f"{channel.name} is already scheduled to close")
@@ -264,10 +267,10 @@ class TempChannel(commands.Cog):
             return await interaction.edit_original_response(content="Opening of channel cancelled")
 
         closingAt = datetime.datetime.utcnow() + human
-        closeMsg = await interaction.channel.send(
+        closeMsg = await channel.send(
             content=f"{channel.name} is now scheduled to close at {discord.utils.format_dt(closingAt, style='t')}")
 
-        _forumDict = view.view_data if _doForum else None
+        _forumDict = view.view_data if _doForum or view.do_forum else None
         if _forumDict:
             await channelConfig.last_title.set(_forumDict.get("name"))
             await channelConfig.last_content.set(_forumDict.get("content"))
