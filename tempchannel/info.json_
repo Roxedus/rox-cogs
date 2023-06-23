@@ -1,0 +1,12 @@
+{
+    "author" : ["Roxedus"],
+    "install_msg" : "You've just installed my tempchannel cog!\nTo get started, explore [p]tset. Open command is a slash command, remember to enable it",
+    "name" : "Backports",
+    "short" : "Temporarily open a channel",
+    "description" : "Temporarily open a channel, with the option of creating a forum post on closing",
+    "required_cogs": {},
+    "requirements": [],
+    "min_bot_version": "3.5.0",
+    "tags": [],
+    "type": "COG"
+}
