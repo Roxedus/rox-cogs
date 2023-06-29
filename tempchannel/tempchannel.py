@@ -31,6 +31,8 @@ DEFAULT_SETTINGS_CHANNEL = {
 send_overwrite = discord.PermissionOverwrite()
 send_overwrite.send_messages = True
 send_overwrite.send_messages_in_threads = True
+send_overwrite.view_channel = True
+send_overwrite.read_messages = True
 
 
 class TempChannel(commands.Cog):
@@ -271,6 +273,18 @@ class TempChannel(commands.Cog):
             content=f"{channel.name} is now scheduled to close at {discord.utils.format_dt(closingAt, style='t')}")
 
         _forumDict = view.view_data if _doForum or view.do_forum else None
+
+        if _forumDict.get("name") and _forumDict.get("content"):
+            try:
+                len(_forumDict["name"]) <= 100
+                len(_forumDict["content"]) <= 1900
+            except TypeError:
+                _forumDict = None
+            except AttributeError:
+                _forumDict = None
+        else:
+            _forumDict = None
+
         if _forumDict:
             await channelConfig.last_title.set(_forumDict.get("name"))
             await channelConfig.last_content.set(_forumDict.get("content"))
@@ -325,9 +339,11 @@ class ForumModal(discord.ui.Modal):
         _content = self.view_data.get("content")
 
         self.add_item(
-            discord.ui.TextInput(label="Title for Forum post", custom_id="name", default=_name))
+            discord.ui.TextInput(label="Title for Forum post", custom_id="name", default=_name,
+                                 max_length=100, min_length=1))
         self.add_item(
-            discord.ui.TextInput(label="Description for Forum post", custom_id="content", default=_content))
+            discord.ui.TextInput(label="Description for Forum post", custom_id="content", default=_content,
+                                 max_length=1900, min_length=1))
 
     async def on_submit(self, interaction: discord.Interaction):
         self.view_data.update({x.custom_id: x.value for x in self.children})
