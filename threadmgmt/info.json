@@ -1,0 +1,14 @@
+{
+    "author": [
+        "Roxedus"
+    ],
+    "install_msg": "Im going to try not crash your server",
+    "name": "Various functions for managing threads",
+    "short": "Thread helper functions",
+    "description": "Thread helper functions",
+    "tags": [
+        "Moderation"
+    ],
+    "min_bot_version": "3.5.0",
+    "hidden": false
+}
