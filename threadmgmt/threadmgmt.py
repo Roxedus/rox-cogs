@@ -6,7 +6,7 @@ from redbot.core.utils import views
 
 import asyncio
 import logging
-from datetime import datetime
+from datetime import timedelta
 from typing import Literal, Union
 
 TAG_TYPES = Literal["close", "invalid"]
@@ -81,9 +81,14 @@ class ThreadManagement(commands.Cog):
         """
         Acts on a thread being tagged as closed
         """
-        warnMsg = await message.send(f"The thread has been tagged as {tag}, and will be closed.")
-        await asyncio.sleep(10)
+        seconds = 10
+        closingAt = discord.utils.utcnow() + timedelta(seconds=seconds)
+        closingTxt = discord.utils.format_dt(closingAt, style="R")
+        warnMsg = await message.send(
+            f"The thread has been tagged as {tag}, and will be closed in {closingTxt} if tag is still present")
+        await asyncio.sleep(seconds - 1)
         if tag in [x.name for x in message.parent.get_thread(message.id).applied_tags]:
+            await warnMsg.edit(content=f"The thread has been tagged as {tag}, and is closed")
             await message.edit(archived=True)
         else:
             await warnMsg.delete()
@@ -94,7 +99,7 @@ class ThreadManagement(commands.Cog):
         Sends warning message to the thread when it is tagged as invalid
         """
         warnMsg = await message.send(
-            f"The thread has been tagged as {tag} by a human, this likely happened because helpfull "
+            f"The thread has been tagged as {tag} by a human, this likely happened because helpful "
             "information was missing from the post."
         )
         await config.tag_messages.set_raw(message.id, value={"invalid": warnMsg.id})
