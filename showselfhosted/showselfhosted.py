@@ -14,6 +14,7 @@ DEFAULT_SETTINGS = {
     "episode_feed_forum_channel": None,
     "episode_feed_forum": False,
     "episode_feed_name": None,
+    "fuckfeed": None,
 }
 
 BOOL_TYPES = Literal["announce", "forum"]
@@ -96,10 +97,15 @@ class ShowSelfHosted(commands.Cog):
 
         config = self.config.guild(channel.guild)
 
-        if feedName == await config.episode_feed_name():
+        if force is True:
             lastLink = feed_data["last_link"]
             lastTitle = feed_data["last_title"]
+        else:
+            await config.fuckfeed.set(feed_data)
+            lastLink = feed_data["link"]
+            lastTitle = feed_data["title"]
 
+        if feedName == await config.episode_feed_name():
             if await config.episode_feed_forum() is True:
                 if await config.episode_feed_forum_channel() is None:
                     return
