@@ -3,10 +3,11 @@ import discord
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.utils import views
-from typing import Literal, Union
 
-import logging
 import asyncio
+import logging
+from datetime import datetime
+from typing import Literal, Union
 
 TAG_TYPES = Literal["close", "invalid"]
 
