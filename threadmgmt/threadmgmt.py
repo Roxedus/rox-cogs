@@ -13,7 +13,7 @@ TAG_TYPES = Literal["close", "invalid"]
 DEFAULT_SETTINGS_CHANNEL = {
     "close_tag": None,
     "invalid_tag": None,
-    "invalid_tag_messages": {}
+    "tag_messages": {}
 }
 
 
@@ -76,6 +76,37 @@ class ThreadManagement(commands.Cog):
         else:
             await write_tag(ctx, tag_type, channel, tag)
 
+    async def on_close_tag(self, message: discord.Thread, tag):
+        """
+        Acts on a thread being tagged as closed
+        """
+        warnMsg = await message.send(f"The thread has been tagged as {tag}, and will be closed.")
+        await asyncio.sleep(10)
+        if tag in [x.name for x in message.parent.get_thread(message.id).applied_tags]:
+            await message.edit(archived=True)
+        else:
+            await warnMsg.delete()
+        return
+
+    async def on_invalid_tag(self, config: Config, message: discord.Thread, tag):
+        """
+        Sends warning message to the thread when it is tagged as invalid
+        """
+        warnMsg = await message.send(
+            f"The thread has been tagged as {tag} by a human, this likely happened because helpfull "
+            "information was missing from the post."
+        )
+        await config.tag_messages.set_raw(message.id, value={"invalid": warnMsg.id})
+
+    async def off_invalid_tag(self, config: Config, message: discord.Thread):
+        """
+        Removes the warning message from the thread when it is untagged as invalid
+        """
+        warnMsg = await config.tag_messages.get_raw(message.id, "invalid")
+        if warnMsg:
+            await (await message.fetch_message(warnMsg)).delete()
+            await config.tag_messages.clear_raw(message.id, "invalid")
+
     @commands.Cog.listener()
     async def on_thread_update(self, before, after):
         """
@@ -88,25 +119,11 @@ class ThreadManagement(commands.Cog):
             newTags = [x.name for x in after.applied_tags if x not in before.applied_tags]
             oldTags = [x.name for x in before.applied_tags if x not in after.applied_tags]
             if not before.archived and after.archived:
-                print("Thread was archived")
-                return await config.invalid_tag_messages.clear_raw(before.id)
+                return await config.tag_messages.clear_raw(before.id)
             if closeTag in newTags:
-                warnMsg = await before.send(f"The thread has been tagged as {closeTag}, and will be closed.")
-                await asyncio.sleep(10)
-                if closeTag in [x.name for x in before.parent.get_thread(before.id).applied_tags]:
-                    await before.edit(archived=True)
-                else:
-                    await warnMsg.delete()
-                return
+                await self.on_close_tag(message=before, tag=closeTag)
             if invalidTag in newTags:
-                warnMsg = await before.send(
-                    f"The thread has been tagged as {invalidTag} by a human, this likely happened because helpfull "
-                    "information was missing from the post."
-                )
-                await config.invalid_tag_messages.set_raw(before.id, value=warnMsg.id)
+                await self.on_invalid_tag(config=config, message=before, tag=invalidTag)
             elif invalidTag in oldTags:
-                warnMsg = await config.invalid_tag_messages.get_raw(before.id)
-                if warnMsg:
-                    await (await before.fetch_message(warnMsg)).delete()
-                    await config.invalid_tag_messages.clear_raw(before.id)
+                await self.off_invalid_tag(config=config, message=before)
             return
