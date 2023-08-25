@@ -3,13 +3,17 @@ import discord
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
 from redbot.core.utils import views
+from typing import Literal, Union
 
 import logging
 import asyncio
 
+TAG_TYPES = Literal["close", "invalid"]
+
 DEFAULT_SETTINGS_CHANNEL = {
-    "autoclose": True,
     "close_tag": None,
+    "invalid_tag": None,
+    "invalid_tag_messages": {}
 }
 
 
@@ -31,55 +35,46 @@ class ThreadManagement(commands.Cog):
         Options for ThreadManagement
         """
 
-    @thread_group.group()
-    async def autoclose(self, ctx: commands.Context):
+    @thread_group.group(name="set")
+    async def thread_set(self, ctx: commands.Context):
         """
-        Autoclose options for ThreadManagement
+        Sets options for ThreadManagement
         """
 
-    @autoclose.command(name="toggle")
+    @thread_set.command(name="tag")
     @checks.admin_or_permissions(manage_threads=True)
-    async def toggle_channel(self, ctx: commands.Context, channel: discord.ForumChannel = None):
+    async def set_tag(self, ctx: commands.Context, tag_type: TAG_TYPES = None,
+                      channel: discord.ForumChannel = None, tag: Union[str, None] = None):
         """
-        Toggles the Autoclose for the mentioned ForumChannel
+        Set the tag for the tag_types for the mentioned ForumChannel
         """
-        config = self.config.channel(channel)
-        state = config.autoclose
-        await config.autoclose.set(not state)
-        await ctx.send(f"Autoclose is now set to {not state} for {channel.mention}")
+        config = await self.config.channel(channel).get_raw(f"{tag_type}_tag")
 
-    @autoclose.command(name="tag")
-    @checks.admin_or_permissions(manage_threads=True)
-    async def set_tag(self, ctx: commands.Context, channel: discord.ForumChannel = None, tag: str = None):
-        """
-        Toggles the Autoclose for the mentioned ForumChannel
-        """
-        config = self.config.channel(channel)
+        async def write_tag(ctx, tag_type, channel, tag):
+            if tag is not None:
+                validTags = [x.name for x in channel.available_tags]
+                if tag not in validTags:
+                    return await ctx.send(
+                        f"{tag} is not a valid tag for {channel.mention}, valid tags are `{', '.join(validTags)}`"
+                    )
+            await self.config.channel(channel).set_raw(f"{tag_type}_tag", value=tag)
+            await ctx.send(f"{tag_type.title()}-tag is now set to {tag} for {channel.mention}")
 
-        async def write_tag(ctx, channel, tag):
-            validTags = [x.name for x in channel.available_tags]
-            if tag not in validTags:
-                return await ctx.send(
-                    f"{tag} is not a valid tag for {channel.mention}, valid tags are `{', '.join(validTags)}`"
-                )
-            await config.close_tag.set(tag)
-            await ctx.send(f"Autoclose tag is now set to {tag} for {channel.mention}")
-
-        if await config.close_tag() is not None:
+        if config is not None:
             view = views.ConfirmView(ctx.author)
             view.confirm_button.style = discord.ButtonStyle.red
             view.confirm_button.label = "Replace"
             view.dismiss_button.label = "Cancel"
             view.message = await ctx.send(
-                f"There is already a tag set for {channel.mention}, it is `{await config.close_tag()}`, replace?",
+                f"There is already a {tag_type}-tag set for {channel.mention}, it is `{config}`, replace?",
                 view=view
             )
             await view.wait()
             await view.message.delete()
             if view.result:
-                await write_tag(ctx, channel, tag)
+                await write_tag(ctx, tag_type, channel, tag)
         else:
-            await write_tag(ctx, channel, tag)
+            await write_tag(ctx, tag_type, channel, tag)
 
     @commands.Cog.listener()
     async def on_thread_update(self, before, after):
@@ -89,12 +84,29 @@ class ThreadManagement(commands.Cog):
         if isinstance(before.parent, discord.ForumChannel):
             config = self.config.channel(before.parent)
             closeTag = await config.close_tag()
-            if await config.autoclose() and closeTag:
-                newTags = [x.name for x in after.applied_tags if x not in before.applied_tags]
-                if closeTag in newTags:
-                    warnMsg = await before.send(f"The thread has been tagged as {closeTag}, and will be closed.")
-                    await asyncio.sleep(10)
-                    if closeTag in [x.name for x in before.parent.get_thread(before.id).applied_tags]:
-                        await before.edit(archived=True)
-                    else:
-                        await warnMsg.delete()
+            invalidTag = await config.invalid_tag()
+            newTags = [x.name for x in after.applied_tags if x not in before.applied_tags]
+            oldTags = [x.name for x in before.applied_tags if x not in after.applied_tags]
+            if not before.archived and after.archived:
+                print("Thread was archived")
+                return await config.invalid_tag_messages.clear_raw(before.id)
+            if closeTag in newTags:
+                warnMsg = await before.send(f"The thread has been tagged as {closeTag}, and will be closed.")
+                await asyncio.sleep(10)
+                if closeTag in [x.name for x in before.parent.get_thread(before.id).applied_tags]:
+                    await before.edit(archived=True)
+                else:
+                    await warnMsg.delete()
+                return
+            if invalidTag in newTags:
+                warnMsg = await before.send(
+                    f"The thread has been tagged as {invalidTag} by a human, this likely happened because helpfull "
+                    "information was missing from the post."
+                )
+                await config.invalid_tag_messages.set_raw(before.id, value=warnMsg.id)
+            elif invalidTag in oldTags:
+                warnMsg = await config.invalid_tag_messages.get_raw(before.id)
+                if warnMsg:
+                    await (await before.fetch_message(warnMsg)).delete()
+                    await config.invalid_tag_messages.clear_raw(before.id)
+            return
