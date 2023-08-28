@@ -1,0 +1,18 @@
+{
+    "author": [
+        "Roxedus"
+    ],
+    "install_msg": "Im going to try not crash your server",
+    "name": "Various functions tailored for the LinuxServer.io Discord server",
+    "short": "Manages common tasks for the LinuxServer.io Discord server",
+    "description": "Manages common tasks for the LinuxServer.io Discord server",
+    "tags": [
+        "Moderation"
+    ],
+    "min_bot_version": "3.5.0",
+    "hidden": false,
+    "required_cogs": {
+        "githubcards": "https://github.com/Kowlin/Sentinel"
+    },
+    "requirements": []
+}
