@@ -26,16 +26,14 @@ class Backports(commands.Cog):
         """
         Lists the oldest accounts on the server
         """
-
         formattedString = ""
 
         members = sorted(ctx.guild.members, key=lambda m: m.created_at)
-        for member in members:
+        for index, member in enumerate(members, start=1):
             user = ctx.guild.get_member(member.id)
             userCreatedDate = int(member.created_at.timestamp())
             createdOn = f"<t:{userCreatedDate}> that is <t:{userCreatedDate}:R>"
-            userIndex = members.index(member) + 1
-            formattedString += f"**#{userIndex}** {user.name}#{user.discriminator} - {createdOn}\n"
+            formattedString += f"**#{index}** {user.name}#{user.discriminator} - {createdOn}\n"
 
         pages = pagify(formattedString, delims=("\n"))
         pages = [{"embed": discord.Embed(description=page, title="Oldest account on the server")} for page in pages]
@@ -140,7 +138,8 @@ class Backports(commands.Cog):
             for ind, page in enumerate(pages):
                 pagedEmbed = discord.Embed.from_dict(copy.deepcopy(embed.to_dict()))
                 pagedEmbed.remove_field(theField - 1)
-                pagedEmbed.add_field(name=f"Users with the role({len(role.members)})", value=page.strip(", "), inline=False)
+                pagedEmbed.add_field(
+                    name=f"Users with the role({len(role.members)})", value=page.strip(", "), inline=False)
                 pagedEmbed.set_footer(text=f"Page {ind + 1} of {len(pages)}")
                 selectObject.append({"embed": pagedEmbed})
             await SimpleMenu(selectObject).start(ctx)
