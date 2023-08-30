@@ -122,14 +122,17 @@ class ThreadManagement(commands.Cog):
             config = self.config.channel(before.parent)
             closeTag = await config.close_tag()
             invalidTag = await config.invalid_tag()
+
+            if after.archived:
+                return await config.tag_messages.clear_raw(before.id)
+
             newTags = [x.name for x in after.applied_tags if x not in before.applied_tags]
             oldTags = [x.name for x in before.applied_tags if x not in after.applied_tags]
-            if not before.archived and after.archived:
-                return await config.tag_messages.clear_raw(before.id)
-            if closeTag in newTags:
-                await self.on_close_tag(message=before, tag=closeTag)
+
             if invalidTag in newTags:
                 await self.on_invalid_tag(config=config, message=before, tag=invalidTag)
             elif invalidTag in oldTags:
                 await self.off_invalid_tag(config=config, message=before)
+            if closeTag in newTags:
+                await self.on_close_tag(message=before, tag=closeTag)
             return
