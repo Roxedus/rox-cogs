@@ -89,7 +89,7 @@ class ThreadManagement(commands.Cog):
         await asyncio.sleep(seconds - 1)
         if tag in [x.name for x in message.parent.get_thread(message.id).applied_tags]:
             await warnMsg.edit(content=f"The thread has been tagged as {tag}, and is closed")
-            await message.edit(archived=True)
+            await message.edit(archived=True, locked=True)
         else:
             await warnMsg.delete()
         return
