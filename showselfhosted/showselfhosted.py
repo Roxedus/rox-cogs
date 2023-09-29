@@ -2,10 +2,11 @@
 import discord
 from redbot.core import Config, checks, commands
 from redbot.core.bot import Red
-from typing import Any, Dict, Literal, Union, get_args
 
 import logging
 import random
+from types import MappingProxyType
+from typing import Any, Dict, Literal, Union, get_args
 
 DEFAULT_SETTINGS = {
     "episode_feed_announce_channel": None,
@@ -84,26 +85,21 @@ class ShowSelfHosted(commands.Cog):
         await ctx.send(f"Set {bool_type} to {bool_value}")
 
     @commands.Cog.listener()
-    async def on_aikaternacogs_rss_feed_update(
+    async def on_aikaternacogs_rss_message(
             self, *, channel: Union[discord.TextChannel, discord.Thread, discord.VoiceChannel, discord.StageChannel],
-            feed_data: Dict[str, Any], force: bool, **_kwargs: Any):
+            feedparser_dict: MappingProxyType[str, Any], force: bool, **_kwargs: Any):
         """
         Listen for RSS events and create a thread
 
         Listener documentation:
         https://github.com/aikaterna/aikaterna-cogs/blob/fb6a65e00bfbe9a3935967cde1da343214a28a2f/rss/rss.py#L1515-L1530
         """
-        feedName = feed_data["name"]
+        feedName = feedparser_dict["name"]
 
         config = self.config.guild(channel.guild)
 
-        if force is True:
-            lastLink = feed_data["last_link"]
-            lastTitle = feed_data["last_title"]
-        else:
-            await config.fuckfeed.set(feed_data)
-            lastLink = feed_data["link"]
-            lastTitle = feed_data["title"]
+        epLink = feedparser_dict["link"]
+        epTitle = feedparser_dict["title"]
 
         if feedName == await config.episode_feed_name():
             if await config.episode_feed_forum() is True:
@@ -111,7 +107,7 @@ class ShowSelfHosted(commands.Cog):
                     return
                 forumId = await config.episode_feed_forum_channel()
                 forumChannel = channel.guild.get_channel(forumId)
-                post = await forumChannel.create_thread(name=lastTitle, content=lastLink)
+                post = await forumChannel.create_thread(name=epTitle, content=epLink)
 
                 if await config.episode_feed_announce():
                     try:
@@ -126,6 +122,6 @@ class ShowSelfHosted(commands.Cog):
                         "# 📻 {Role}\n## 🌐 {Link} \n### 🧵 {Post}"
                     ]
                     announceText = random.choice(announceTextCandidate).format(
-                        Role=announceRole.mention, Link=lastLink, Post=post.thread.jump_url)
+                        Role=announceRole.mention, Link=epLink, Post=post.thread.jump_url)
 
                     await announceChannel.send(announceText)
