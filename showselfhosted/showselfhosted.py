@@ -87,14 +87,14 @@ class ShowSelfHosted(commands.Cog):
     @commands.Cog.listener()
     async def on_aikaternacogs_rss_message(
             self, *, channel: Union[discord.TextChannel, discord.Thread, discord.VoiceChannel, discord.StageChannel],
-            feedparser_dict: MappingProxyType[str, Any], force: bool, **_kwargs: Any):
+            feed_data: Dict[str, Any], feedparser_dict: MappingProxyType[str, Any], force: bool, **_kwargs: Any):
         """
         Listen for RSS events and create a thread
 
         Listener documentation:
         https://github.com/aikaterna/aikaterna-cogs/blob/fb6a65e00bfbe9a3935967cde1da343214a28a2f/rss/rss.py#L1515-L1530
         """
-        feedName = feedparser_dict["name"]
+        feedName = feed_data["name"]
 
         config = self.config.guild(channel.guild)
 
