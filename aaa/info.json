@@ -1,0 +1,14 @@
+{
+    "author": [
+        "Roxedus"
+    ],
+    "install_msg": "You've just installed my aaaaaaaaaa cog!",
+    "name": "aaa",
+    "short": "aaa",
+    "description": "aaa",
+    "required_cogs": {},
+    "requirements": [],
+    "min_bot_version": "3.5.0",
+    "tags": [],
+    "type": "COG"
+}
