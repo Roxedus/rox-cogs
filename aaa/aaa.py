@@ -45,7 +45,6 @@ class Aaa(commands.Cog):
                 mod = entry.moderator
             elif isinstance(entry.moderator, discord.abc.User):
                 mod = entry.moderator.id
-            print(mod, mod_id)
             if mod == mod_id:
                 await ctx.guild.unban(discord.Object(user))
                 unbanCounter += 1
