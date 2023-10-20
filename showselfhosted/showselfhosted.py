@@ -124,4 +124,4 @@ class ShowSelfHosted(commands.Cog):
                     announceText = random.choice(announceTextCandidate).format(
                         Role=announceRole.mention, Link=epLink, Post=post.thread.jump_url)
 
-                    await announceChannel.send(announceText)
+                    await announceChannel.send(announceText, allowed_mentions=discord.AllowedMentions(roles=True))
