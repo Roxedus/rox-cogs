@@ -23,7 +23,8 @@ class Rulerr(commands.Cog):
 
     def __init__(self, bot: Red):
         self.bot = bot
-        self.config = Config.get_conf(self, identifier=9783465975, force_registration=True)
+        self.config = Config.get_conf(
+            self, identifier=9783465975, force_registration=True)
         default_settings = {
             "agreement_msg": {},
             "agreement_role": "",
@@ -56,7 +57,8 @@ class Rulerr(commands.Cog):
         if isinstance(law, str):
             law = law.lower()
 
-        content = "{}! {}".format(user.mention, _('Hey please read the rules')) if user else None
+        content = "{}! {}".format(user.mention, _(
+            'Hey please read the rules')) if user else None
         embed = None
 
         config = self.config.guild(ctx.guild)
@@ -99,14 +101,18 @@ class Rulerr(commands.Cog):
                 await ctx.send(_('Could not find the rule you were looking for'))
             elif law != await rules.get_settings("default_rule"):
                 embed = await self.helper._create_embed(
-                    "**{_txt} {law}**\n".format(_txt=_('The rules for the ruleset'), law=law) + partial_rules
-                    )
+                    "**{_txt} {law}**\n".format(
+                        _txt=_('The rules for the ruleset'), law=law) + partial_rules
+                )
             else:
                 embed = await self.helper._create_embed(partial_rules, date)
         else:
             embed = await self.helper._create_embed(rule_text, date)
-        embed.title = "Someone wants to remind you about the rules:"
-        await ctx.send(content=content, embed=embed)
+        if embed:
+            embed.title = "Someone wants to remind you about the rules:"
+            await ctx.send(content=content, embed=embed)
+        else:
+            await ctx.send("Could not build rule embed")
 
     @commands.guild_only()
     @checks.mod_or_permissions(manage_messages=True)
@@ -141,15 +147,20 @@ class Rulerr(commands.Cog):
         added = await rules.add_rule(law, newrule)
         new_rule = await config.rules.get_raw(law)
 
-        title = (_('The ruleset {ruleset} already exists') if not added else _('Ruleset {ruleset} added')).format(ruleset=law)
+        title = (_('The ruleset {ruleset} already exists') if not added else _(
+            'Ruleset {ruleset} added')).format(ruleset=law)
 
-        description = _('RuleText') + f':\n```diff\n{new_rule["rule_text"][:980]}\n```'
+        description = _('RuleText') + \
+            f':\n```diff\n{new_rule["rule_text"][:980]}\n```'
         if new_rule.get('alternate'):
-            description += "\n" + _('AltText') + f':\n```diff\n{new_rule["alternate"][:980]}\n```'
+            description += "\n" + \
+                _('AltText') + \
+                f':\n```diff\n{new_rule["alternate"][:980]}\n```'
 
         embed = discord.Embed(title=title, colour=ctx.me.colour)
         embed.description = description
-        embed.add_field(name=_('Edited at'), value=new_rule['edited'].split(".")[0])
+        embed.add_field(name=_('Edited at'),
+                        value=new_rule['edited'].split(".")[0])
         await ctx.send(embed=embed)
 
     @ _rule_settings.command(name="plaintext")
@@ -332,7 +343,8 @@ class Rulerr(commands.Cog):
             return await ctx.send(_('No message is currently set up for automatic updates'))
 
         embed = await self.helper._create_embed()
-        embed.title = "**{}:**".format(_('Messages set to automatically update'))
+        embed.title = "**{}:**".format(
+            _('Messages set to automatically update'))
 
         for message in auto_update_messages:
             embed.add_field(name=f'Lov: {message["name"]}', inline=False,
@@ -410,7 +422,8 @@ class Rulerr(commands.Cog):
         rules = RuleManager(self.config.guild(ctx.guild))
         react_messages = await rules.get_settings("react_rules")
 
-        list_message = "**{}:**\n".format(_('Reaction-messages set to automatically update'))
+        list_message = "**{}:**\n".format(
+            _('Reaction-messages set to automatically update'))
 
         if len(react_messages) == 0:
             return await ctx.send(_('No reaction-message is currently set up for automatic updates'))
@@ -564,7 +577,8 @@ class Rulerr(commands.Cog):
 
         config = self.config.guild(ctx.guild)
         await config.agreement_role.set(role.id)
-        msg_txt = role.mention + " " + _('is now the role assigned on agreement')
+        msg_txt = role.mention + " " + \
+            _('is now the role assigned on agreement')
         embed = await self.helper._create_embed(text=msg_txt)
         await ctx.send(embed=embed)
 
@@ -624,7 +638,8 @@ class Rulerr(commands.Cog):
         if rule_text is None:
             return await context.send(
                 "{_not_default}.\n\n**{_these}**:\n{_formatted}".format(
-                    _not_default=_('There needs to be a default ruleset for this guild for this to work'),
+                    _not_default=_(
+                        'There needs to be a default ruleset for this guild for this to work'),
                     _these=_('The following rulesets are configured'),
                     _formatted=await rules.get_rules_formatted()
                 )
@@ -647,7 +662,8 @@ class Rulerr(commands.Cog):
 
         usrs = [user.mention for user in message.mentions if not user.bot and (
             user.id != message.author.id)] if message.mentions else None
-        text = "{}! {}".format(', '.join(usrs), _('Hey please read the rules')) if usrs else None
+        text = "{}! {}".format(', '.join(usrs), _(
+            'Hey please read the rules')) if usrs else None
 
         embed = await self.helper._create_embed(partial_rules, date)
         embed.title = "Someone wants to remind you about the rules:"
@@ -683,7 +699,8 @@ class Rulerr(commands.Cog):
                     if msg.channel.permissions_for(user).send_messages:
                         await channel.send("{} {}".format(_('Tell a mod to fix my perms'), user.mention))
                     else:
-                        self.log.info("The bot is missing perms in %s to agree" % (msg.guild.name))
+                        self.log.info(
+                            "The bot is missing perms in %s to agree" % (msg.guild.name))
         else:
             if payload.event_type == "REACTION_ADD" and payload.user_id != self.bot.user.id:
                 await msg.remove_reaction(payload.emoji, payload.member)
