@@ -616,8 +616,8 @@ class Rulerr(commands.Cog):
         if message.author.id == self.bot.user.id:
             return
 
-        if not isinstance(message.channel, discord.TextChannel):
-            return
+        # if not isinstance(message.channel, discord.TextChannel):
+        #     return
 
         content = message.content
 
