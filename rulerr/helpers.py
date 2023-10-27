@@ -105,4 +105,4 @@ class RuleHelper:
 
     async def _format_message_link(self, msg):
         return {"channel": msg.channel.id, "message": msg.id,
-                "link": f"https://discordapp.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}"}
+                "link": f"https://discord.com/channels/{msg.guild.id}/{msg.channel.id}/{msg.id}"}

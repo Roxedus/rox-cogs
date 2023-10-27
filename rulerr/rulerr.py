@@ -47,6 +47,17 @@ class Rulerr(commands.Cog):
         """ Nothing to delete """
         return
 
+    async def migrate(self):
+        config = Config.get_conf(self, identifier=9783465975)
+        guild_ids = await config.all_guilds()
+        for guild in guild_ids:
+            async with config.guild_from_id(guild).auto_update() as auto_update:
+                print(auto_update)
+                for index, channel in enumerate(auto_update):
+                    channel["link"] = channel["link"].replace("discordapp", "discord")
+                    auto_update[index] = channel
+                print(auto_update)
+
     @commands.guild_only()
     @commands.command(name="rule")
     async def rules(self, ctx, user: Optional[discord.Member] = None, ruleset: Union[int, str] = None, *, num: str = None):
@@ -301,7 +312,7 @@ class Rulerr(commands.Cog):
             await ctx.send(_('Message removed from list'))
         else:
             await ctx.send(_('Ensure the link is used with {list_command}').format(
-                list_command=f'`{ctx.prefix}autoset list`'))
+                list_command=f'`{ctx.prefix}rset auto list`'))
 
     @ _auto_settings.command(name="add")
     async def autorules(self, ctx, ruleset, link):
