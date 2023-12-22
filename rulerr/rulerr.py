@@ -697,7 +697,7 @@ class Rulerr(commands.Cog):
 
         role = msg.guild.get_role(role)
 
-        if await config.get_raw("agreement_msg"):
+        if not await config.get_raw("agreement_msg"):
             return
         if payload.message_id != await config.get_raw("agreement_msg", "message"):
             return
