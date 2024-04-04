@@ -211,6 +211,23 @@ class ThreadManagement(commands.Cog):
             await config.tag_messages.clear_raw(message.id, "invalid")
 
     @commands.Cog.listener()
+    async def on_raw_member_remove(self, payload):
+        """
+        Listen on member removal to see if we need to do anything.
+        """
+        guild = self.bot.get_guild(payload.guild_id)
+        user = payload.user
+        userThreads = [x for x in guild.threads if
+                       x.owner_id == user.id
+                       and not x.archived
+                       and not x.locked
+                       and isinstance(x.parent, discord.ForumChannel)
+                       ]
+        for message in userThreads:
+            await message.send(f"{user.mention} has left the server, this thread is now archived.")
+            await message.edit(archived=True)
+
+    @commands.Cog.listener()
     async def on_thread_update(self, before, after):
         """
         Listen on thread updates to see if we need to do anything.
