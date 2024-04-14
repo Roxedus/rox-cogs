@@ -218,7 +218,7 @@ class LinuxServer(commands.Cog):
             embed=await self._create_support_embed(),
             )
 
-    @app_commands.command(name="support")
+    @app_commands.command(name="support", description="Get support from LinuxServer.io")
     @app_commands.guild_only()
     async def support_slash(self, interaction: discord.Interaction, user: discord.Member = None) -> None:
         await interaction.response.send_message("Support instructions are sent", ephemeral=True)
