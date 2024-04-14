@@ -1,6 +1,6 @@
 # Bot Packages
 import discord
-from redbot.core import Config, checks, commands
+from redbot.core import Config, checks, commands, app_commands
 from redbot.core.bot import Red
 from redbot.core.utils import views
 
@@ -32,6 +32,11 @@ class LinuxServer(commands.Cog):
         self.log.setLevel(logging.INFO)
         self.ghapi: GitHubAPI = None
         self.config.register_guild(**DEFAULT_SETTINGS_GUILD)
+        self.ctx_support = app_commands.ContextMenu(
+            name='Get Support',
+            callback=self.support_context,
+        )
+        self.bot.tree.add_command(self.ctx_support)
 
     # Gotten from https://github.com/Kowlin/Sentinel/blob/8040f09ed5cd51aaa7ccdd7d8711e2dcc664283f/githubcards/core.py#L84-L92
     async def _get_token(self, api_tokens: Optional[Mapping[str, str]] = None) -> str:
@@ -69,6 +74,23 @@ class LinuxServer(commands.Cog):
 
     async def cog_unload(self):
         self.bot.loop.create_task(self.ghapi.session.close())
+        self.bot.tree.remove_command(self.ctx_support.name, type=self.ctx_support.type)
+
+    async def _create_support_embed(self) -> discord.Embed:
+        embed = discord.Embed(
+            title="LinuxServer.io Support",
+            description="\nPlease could you provide the following information so we can help with supporting your issue:\n"
+                        "- Output of `uname -mr && docker version`\n"
+                        "- Output of `cat /etc/os-release`\n"
+                        "- Docker run command or compose snippet\n"
+                        "- Container logs beginning with our logo (<#805732277501034506> 5)\n"
+                        "- Describe the issue you're having with the container.\n"
+                        "\n\nMind the <#805732277501034506> and our [Support Policy](https://www.linuxserver.io/supportpolicy) "
+                        "and remember this server supports the containers, not the apps inside (they have their own support)."
+                        "\n\n```diff\n- Failure to provide logs and compose/run might delay a response\n```",
+            color=discord.Color.blurple()
+        )
+        return embed
 
     @commands.group(name="linuxserver", aliases=["lsio"])
     @checks.admin_or_permissions(manage_messages=True)
@@ -184,3 +206,30 @@ class LinuxServer(commands.Cog):
         await config.githubcards.set(cards)
         embed = discord.Embed(title="GitHub Cards", description=f"Added `{', '.join(newRepos)}`")
         await view.message.edit(content=f"Added {len(newRepos)} new repos", embed=embed, view=None)
+
+    @commands.command(name="support", aliases=["logs", "compose"])
+    async def support(self, ctx: commands.Context, user: discord.Member = None) -> None:
+        """
+        Get support from LinuxServer.io
+        """
+        await ctx.message.delete()
+        await ctx.send(
+            f"{ctx.author.mention} please provide some information" if user else None,
+            embed=await self._create_support_embed(),
+            )
+
+    @app_commands.command(name="support")
+    @app_commands.guild_only()
+    async def support_slash(self, interaction: discord.Interaction, user: discord.Member = None) -> None:
+        await interaction.response.send_message("Support instructions are sent", ephemeral=True)
+        return await interaction.channel.send(
+            f"{user.mention} please provide some information" if user else None,
+            embed=await self._create_support_embed()
+            )
+
+    @app_commands.guild_only()
+    async def support_context(self, interaction: discord.Interaction, message: discord.Message) -> None:
+        await interaction.response.send_message("Support instructions are sent", ephemeral=True)
+        return await message.reply(
+            embed=await self._create_support_embed(), mention_author=True
+            )
