@@ -79,15 +79,15 @@ class LinuxServer(commands.Cog):
     async def _create_support_embed(self) -> discord.Embed:
         embed = discord.Embed(
             title="LinuxServer.io Support",
-            description="\nPlease could you provide the following information so we can help with supporting your issue:\n"
-                        "- Output of `uname -mr && docker version`\n"
-                        "- Output of `cat /etc/os-release`\n"
-                        "- Docker run command or compose snippet\n"
-                        "- Container logs beginning with our logo (<#805732277501034506> 5)\n"
-                        "- Describe the issue you're having with the container.\n"
+            description="Please could you provide the following information so we can help with supporting your issue:\n\n"
+                        "1. Output of `uname -mr && docker version`\n"
+                        "2. Output of `cat /etc/os-release`\n"
+                        "3. Docker run command or compose snippet\n"
+                        "4. Container logs beginning with our logo (<#805732277501034506> 5)\n"
+                        "5. Describe the issue you're having with the container.\n"
                         "\n\nMind the <#805732277501034506> and our [Support Policy](https://www.linuxserver.io/supportpolicy) "
                         "and remember this server supports the containers, not the apps inside (they have their own support)."
-                        "\n\n```diff\n- Failure to provide logs and compose/run might delay a response\n```",
+                        "\n\n```diff\n- Failure to provide logs & compose/run might delay a response\n```",
             color=discord.Color.blurple()
         )
         return embed
