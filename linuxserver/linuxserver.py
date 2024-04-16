@@ -214,7 +214,7 @@ class LinuxServer(commands.Cog):
         """
         await ctx.message.delete()
         await ctx.send(
-            f"{ctx.author.mention} please provide some information" if user else None,
+            f"{user.mention} please provide some information" if user else None,
             embed=await self._create_support_embed(),
             )
 
